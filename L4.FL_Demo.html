@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Responsive Fluid Grid (Mobile / Tablet / Desktop)</title>
+<style>
+  /* Βασικά */
+  *{ box-sizing:border-box; }
+  body{ margin:0; font:16px/1.5 system-ui, sans-serif; background:#f6f7f9; color:#222; }
+  .container{ width:100%; max-width:1140px; margin:0 auto; padding:0 12px; }
+
+  /* Γραμμές & καθάρισμα floats */
+  .row::after{ content:""; display:table; clear:both; }
+
+  /* Στήλες (fluid: ποσοστά) */
+  .col{ float:left; padding:8px; }
+  .col-12 { width:100%; }
+  .col-6  { width:50%; }
+  .col-4  { width:33.3333%; }
+  .col-3  { width:25%; }
+  .col-8  { width:66.6667%; }
+
+  /* Διακοσμητικά για να φαίνεται το πλέγμα */
+  .block{ background:#e3f2fd; border:1px solid #bbdefb; border-radius:8px; padding:16px; }
+  header .block, footer .block{ background:#bbdefb; }
+  .banner{ background:#81d4fa; }
+  .article{ background:#fff; border:1px dashed #cfd8dc; }
+
+  /* ------- Mobile first (default) -------
+     Στο κινητό όλα γίνονται στοίβα (col-12).
+     Τα παρακάτω classes θα τα επικαλύψουμε στα breakpoints.
+  */
+  .m-12{ width:100%; }
+
+  /* ------- Tablet breakpoint ------- */
+  @media (min-width: 768px){
+    /* Τρίστηλο κεντρικά, π.χ. sidebar/narrow/κύριο */
+    .t-8{ width:66.6667%; }
+    .t-4{ width:33.3333%; }
+    .t-6{ width:50%; }
+    .t-3{ width:25%; }
+    .t-12{ width:100%; }
+  }
+
+  /* ------- Desktop breakpoint ------- */
+  @media (min-width: 1024px){
+    /* Περισσότερη ποικιλία στηλών */
+    .d-8 { width:66.6667%; }
+    .d-4 { width:33.3333%; }
+    .d-6 { width:50%; }
+    .d-3 { width:25%; }
+    .d-12{ width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="container">
+  <div class="row">
+    <div class="col m-12 t-12 d-12">
+      <div class="block"><strong>Header</strong></div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- Banner / Hero -->
+  <div class="row">
+    <div class="col m-12 t-12 d-12">
+      <div class="block banner">Banner</div>
+    </div>
+  </div>
+
+  <!-- Ζώνη: Mobile = στοίβα, Tablet = 3 στήλες, Desktop = 3 στήλες + άρθρα δεξιά -->
+  <div class="row">
+    <!-- Αριστερή στήλη (π.χ. μενού/links) -->
+    <div class="col m-12 t-3 d-3">
+      <div class="block">Nav / Links</div>
+      <div class="block">Promo</div>
+      <div class="block">Widget</div>
+    </div>
+
+    <!-- Μεσαία στήλη (π.χ. featured άρθρα σε tiles) -->
+    <div class="col m-12 t-4 d-4">
+      <div class="row">
+        <div class="col m-6 t-6 d-6"><div class="block article">Article A</div></div>
+        <div class="col m-6 t-6 d-6"><div class="block article">Article B</div></div>
+        <div class="col m-6 t-6 d-6"><div class="block article">Article C</div></div>
+        <div class="col m-6 t-6 d-6"><div class="block article">Article D</div></div>
+      </div>
+    </div>
+
+    <!-- Κύριο περιεχόμενο -->
+    <div class="col m-12 t-5 d-5">
+      <div class="block article">Main Article 1</div>
+      <div class="block article">Main Article 2</div>
+    </div>
+  </div>
+
+  <!-- Κάτω ζώνη άρθρων -->
+  <div class="row">
+    <div class="col m-12 t-6 d-6"><div class="block article">Article 3</div></div>
+    <div class="col m-12 t-6 d-6"><div class="block article">Article 4</div></div>
+  </div>
+</main>
+
+<footer class="container">
+  <div class="row">
+    <div class="col m-12 t-12 d-12">
+      <div class="block">Footer</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
