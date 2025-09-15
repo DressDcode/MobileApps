@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Viewport Units Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+
+    /* Το κουτί της επίδειξης */
+    .box {
+      width: 100vw;        /* (1) Γεμίζει όλο το πλάτος του viewport */
+      height: 100vh;       /* (1) Γεμίζει όλο το ύψος του viewport */
+      border: 3px dashed #333;
+      display: grid;
+      place-items: center; /* κεντράρουμε το κείμενο */
+      background: repeating-linear-gradient(
+        45deg, #f7f7f7 0 12px, #eaeaea 12px 24px
+      );
+    }
+
+    /* Αν προστεθεί αυτή η κλάση, το πλάτος γίνεται 50% του viewport */
+    .box.half { width: 50vw; }  /* (2) Μισό πλάτος – το ύψος μένει 100vh */
+
+    /* Μικρό HUD για να βλέπεις το τρέχον viewport */
+    .hud {
+      position: fixed; inset: 10px auto auto 10px;
+      background: rgba(0,0,0,.65); color: #fff; padding: 8px 10px;
+      border-radius: 10px; font: 13px/1.2 system-ui;
+    }
+
+    /* Κουμπί εναλλαγής 100vw ↔ 50vw ώστε να μην χρειάζεται refresh */
+    .toggle {
+      position: fixed; inset: 10px 10px auto auto;
+      background: #111; color: #fff; border: 0; border-radius: 10px;
+      padding: 8px 12px; cursor: pointer; font: 14px/1 system-ui;
+    }
+  </style>
+</head>
+<body>
+  <div class="hud">Viewport: <span id="vw"></span> × <span id="vh"></span> px</div>
+  <button class="toggle" id="toggle">Πλάτος: 100vw → 50vw</button>
+
+  <div class="box" id="box">
+    <div style="text-align:center">
+      <h1 style="margin:0">.box</h1>
+      <p style="margin:.25rem 0 0">width: <strong id="wlabel">100vw</strong>; height: <strong>100vh</strong>;</p>
+    </div>
+  </div>
+
+  <script>
+    const box = document.getElementById('box');
+    const btn = document.getElementById('toggle');
+    const wlabel = document.getElementById('wlabel');
+    const vwEl = document.getElementById('vw');
+    const vhEl = document.getElementById('vh');
+
+    function updateViewportHud() {
+      vwEl.textContent = Math.round(window.innerWidth);
+      vhEl.textContent = Math.round(window.innerHeight);
+    }
+    updateViewportHud();
+    window.addEventListener('resize', updateViewportHud);
+
+    // (2) Εναλλαγή 100vw ↔ 50vw χωρίς να αλλάζεις τον κώδικα ζωντανά
+    btn.addEventListener('click', () => {
+      box.classList.toggle('half');
+      const half = box.classList.contains('half');
+      wlabel.textContent = half ? '50vw' : '100vw';
+      btn.textContent = half ? 'Πλάτος: 50vw → 100vw' : 'Πλάτος: 100vw → 50vw';
+    });
+  </script>
+</body>
+</html>
