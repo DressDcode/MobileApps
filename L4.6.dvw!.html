@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vh vs dvh Demo (με μετρητή)</title>
+  <style>
+    :root {
+      /* μικρή βοήθεια για ασφαλή περιθώρια σε notch συσκευές */
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      display: flex;
+      min-height: 100vh;
+    }
+    .col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: calc(1rem + var(--safe-top)) 1rem calc(1rem + var(--safe-bottom));
+      color: #fff;
+      text-align: center;
+    }
+    .a { background: #0f8a83; min-height: 100vh; }
+    .b { background: #f06449; min-height: 100dvh; }
+
+    h1 { margin: 0; font-size: 2rem; }
+    p { margin: 0; opacity: .9; }
+    input, button, select {
+      font-size: 1rem;
+      padding: .6rem .75rem;
+      border: 0;
+      border-radius: .5rem;
+      width: min(80%, 260px);
+    }
+    /* πάνελ μετρήσεων */
+    .hud {
+      position: fixed;
+      left: 0; right: 0; top: 0;
+      margin: env(safe-area-inset-top, 0);
+      background: rgba(0,0,0,.7);
+      color: #fff;
+      font: 14px/1.3 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      padding: .5rem .75rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: .25rem .75rem;
+      z-index: 9999;
+      pointer-events: none;
+    }
+    .row-label { opacity: .8; }
+    .spacer { height: 1000px; } /* για να υπάρχει αρκετό scroll στο κινητό */
+    .note {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(0,0,0,.55); color: #fff;
+      padding: .5rem .75rem;
+      font-size: .9rem;
+      text-align: center;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="hud" id="hud">
+    <div class="row-label">innerHeight:</div><div id="ih">—</div>
+    <div class="row-label">visualViewport.height:</div><div id="vvh">—</div>
+    <div class="row-label">100vh (px):</div><div id="vhpx">—</div>
+    <div class="row-label">100dvh (px):</div><div id="dvhpx">—</div>
+    <div class="row-label">100svh (px):</div><div id="svhpx">—</div>
+    <div class="row-label">100lvh (px):</div><div id="lvhpx">—</div>
+  </div>
+
+  <section class="col a">
+    <h1>100vh</h1>
+    <p>Παλιό viewport ύψος</p>
+    <input placeholder="Focus εδώ για keyboard…" />
+    <div class="spacer" aria-hidden="true"></div>
+  </section>
+
+  <section class="col b">
+    <h1>100dvh</h1>
+    <p>Δυναμικό, «πραγματικό» ύψος</p>
+    <input placeholder="…κι εδώ επίσης" />
+    <div class="spacer" aria-hidden="true"></div>
+  </section>
+
+  <div class="note">
+    Demo tip: σε κινητό, κάνε λίγο scroll (η address bar μαζεύει) ή focus σε input για να φανεί η διαφορά.
+  </div>
+
+  <script>
+    // μετατρέπει ένα css length σε px (π.χ. "100dvh")
+    function cssToPx(expr) {
+      const el = document.createElement('div');
+      el.style.position = 'absolute';
+      el.style.height = expr;
+      el.style.visibility = 'hidden';
+      document.body.appendChild(el);
+      const px = el.getBoundingClientRect().height;
+      document.body.removeChild(el);
+      return Math.round(px);
+    }
+
+    function updateHud() {
+      const ih = window.innerHeight;
+      const vvh = window.visualViewport ? Math.round(window.visualViewport.height) : '(no visualViewport)';
+      const vhpx = cssToPx('100vh');
+      const dvhpx = cssToPx('100dvh');
+      const svhpx = cssToPx('100svh');
+      const lvhpx = cssToPx('100lvh');
+
+      document.getElementById('ih').textContent = ih + ' px';
+      document.getElementById('vvh').textContent = vvh;
+      document.getElementById('vhpx').textContent = vhpx + ' px';
+      document.getElementById('dvhpx').textContent = dvhpx + ' px';
+      document.getElementById('svhpx').textContent = svhpx + ' px';
+      document.getElementById('lvhpx').textContent = lvhpx + ' px';
+    }
+
+    updateHud();
+    window.addEventListener('resize', updateHud, { passive: true });
+    window.addEventListener('orientationchange', updateHud, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateHud, { passive: true });
+      window.visualViewport.addEventListener('scroll', updateHud, { passive: true });
+    }
+  </script>
+</body>
+</html>
