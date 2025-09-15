@@ -13,11 +13,11 @@
 }
 
 #navigation {
-	width: 5%;
+	width: 30%;
 }
 
 #content {
-	width: 89%;
+	width: 64%;
 }
 
 #footer {
@@ -39,4 +39,5 @@ h2 {
 h2, p {
 	margin-left: 7px;
 	margin-right: 7px;
+
 } 
