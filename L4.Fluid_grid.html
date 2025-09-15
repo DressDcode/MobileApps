@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fluid Grid Demo (χωρίς media queries)</title>
+<style>
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    font:16px/1.5 system-ui, sans-serif;
+    background:#f6f7f9;
+    color:#222;
+  }
+
+  .container{
+    width:100%;
+    max-width:1140px; /* προαιρετικά, για να μην ξεχειλώνει σε πολύ μεγάλες οθόνες */
+    margin:0 auto;
+    padding:0 10px;
+  }
+
+  /* γραμμές */
+  .row::after{
+    content:""; display:table; clear:both;
+  }
+
+  /* στήλες */
+  .col{
+    float:left;
+    padding:10px;
+  }
+
+  /* ορισμός πλατών για 12 στήλες */
+  .col-1  { width: 8.3333%; }
+  .col-2  { width: 16.6667%; }
+  .col-3  { width: 25%; }
+  .col-4  { width: 33.3333%; }
+  .col-5  { width: 41.6667%; }
+  .col-6  { width: 50%; }
+  .col-7  { width: 58.3333%; }
+  .col-8  { width: 66.6667%; }
+  .col-9  { width: 75%; }
+  .col-10 { width: 83.3333%; }
+  .col-11 { width: 91.6667%; }
+  .col-12 { width: 100%; }
+
+  /* εμφάνιση για μάθημα */
+  .block{
+    background:#fff;
+    border:1px solid #ccc;
+    text-align:center;
+    padding:20px;
+    border-radius:6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Fluid Grid 12-στηλών (χωρίς media queries)</h1>
+
+  <div class="row">
+    <div class="col col-12"><div class="block">12/12 (100%)</div></div>
+  </div>
+
+  <div class="row">
+    <div class="col col-6"><div class="block">6/12 (50%)</div></div>
+    <div class="col col-6"><div class="block">6/12 (50%)</div></div>
+  </div>
+
+  <div class="row">
+    <div class="col col-4"><div class="block">4/12 (33%)</div></div>
+    <div class="col col-4"><div class="block">4/12 (33%)</div></div>
+    <div class="col col-4"><div class="block">4/12 (33%)</div></div>
+  </div>
+
+  <div class="row">
+    <div class="col col-3"><div class="block">3/12 (25%)</div></div>
+    <div class="col col-3"><div class="block">3/12 (25%)</div></div>
+    <div class="col col-3"><div class="block">3/12 (25%)</div></div>
+    <div class="col col-3"><div class="block">3/12 (25%)</div></div>
+  </div>
+
+  <div class="row">
+    <div class="col col-8"><div class="block">8/12 (≈67%)</div></div>
+    <div class="col col-4"><div class="block">4/12 (≈33%)</div></div>
+  </div>
+
+</div>
+
+</body>
+</html>
