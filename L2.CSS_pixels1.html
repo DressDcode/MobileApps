@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Viewport & DPR Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .box {
+      width: 100px;
+      height: 100px;
+      background: tomato;
+    }
+  </style>
+</head>
+<body>
+  <h1>CSS Pixels Demo</h1>
+  <p><strong>window.innerWidth:</strong> <span id="w"></span> px</p>
+  <p><strong>window.innerHeight:</strong> <span id="h"></span> px</p>
+  <p><strong>devicePixelRatio:</strong> <span id="dpr"></span></p>
+  <p><strong>screen.width × screen.height:</strong> <span id="screen"></span> px</p>
+
+  <div class="box"></div>
+  <p>Το κόκκινο τετράγωνο είναι 100 × 100 CSS pixels.</p>
+
+  <script>
+    function update() {
+      document.getElementById("w").textContent = window.innerWidth;
+      document.getElementById("h").textContent = window.innerHeight;
+      document.getElementById("dpr").textContent = window.devicePixelRatio;
+      document.getElementById("screen").textContent =
+        screen.width + " × " + screen.height;
+    }
+    document.addEventListener("DOMContentLoaded", update);
+    window.addEventListener("resize", update);
+  </script>
+</body>
+</html>
