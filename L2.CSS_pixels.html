@@ -2,17 +2,11 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Viewport & DPR Demo</title>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    .box {
-      width: 100px;
-      height: 100px;
-      background: tomato;
-    }
+    body { font-family: sans-serif; padding: 20px; }
+    .box { width: 100px; height: 100px; background: tomato; }
   </style>
 </head>
 <body>
@@ -30,10 +24,14 @@
       document.getElementById("w").textContent = window.innerWidth;
       document.getElementById("h").textContent = window.innerHeight;
       document.getElementById("dpr").textContent = window.devicePixelRatio;
-      document.getElementById("screen").textContent =
-        screen.width + " × " + screen.height;
+      document.getElementById("screen").textContent = screen.width + " × " + screen.height;
     }
-    document.addEventListener("DOMContentLoaded", update);
+    document.addEventListener("DOMContentLoaded", () => {
+      update();
+      // Μικρό alert για να επιβεβαιώσουμε ότι τρέχει JS:
+      // (αν ΔΕΝ δεις αυτό το alert, δεν τρέχει JavaScript)
+      alert("JS OK. innerWidth = " + window.innerWidth);
+    });
     window.addEventListener("resize", update);
   </script>
 </body>
