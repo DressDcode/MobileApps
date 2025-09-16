@@ -2,203 +2,51 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>vh vs dvh vs svh/lvh – Ζωντανό demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vh vs dvh Demo</title>
   <style>
-    :root {
-      --gap: 12px;
-      --card-bg: #111827;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #22d3ee;
-    }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    * { box-sizing: border-box; margin: 0; }
     body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-      color: var(--text);
-      background: #0b1220;
+      display: flex;
+      height: 100%; /* για να μοιραστούν στην οθόνη */
+      font-family: sans-serif;
     }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: 12px 16px;
-      background: linear-gradient(180deg, rgba(17,24,39,0.95), rgba(17,24,39,0.85));
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid #111827;
+    .panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.2rem;
+      padding: 1rem;
     }
-
-    .wrap {
-      padding: 16px;
-      display: grid;
-      gap: var(--gap);
-      grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
-      align-items: start;
+    .vh-panel {
+      background: teal;
+      min-height: 100vh;
     }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid #1f2937;
-      border-radius: 14px;
-      padding: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    .dvh-panel {
+      background: tomato;
+      min-height: 100dvh;
     }
-
-    .title { font-weight: 700; margin: 0 0 6px; display: flex; align-items: center; gap: 8px; }
-    .title code { background: #0f172a; padding: 2px 6px; border-radius: 6px; border: 1px solid #1f2937; color: #93c5fd; }
-    .muted { color: var(--muted); font-size: 0.92rem; }
-
-    .hero {
-      border-radius: 12px;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      gap: 12px; padding: 12px; text-align: center;
-      color: white; font-weight: 600; letter-spacing: .3px;
+    input {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 80%;
     }
-    .hero > input, .hero > textarea {
-      width: min(85%, 320px);
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #1f2937;
-      background: #0b1020; color: white; font-size: 16px;
-    }
-
-    /* Τα τρία demos με διαφορετικές μονάδες ύψους */
-    .vh    { min-height: 100vh;  background: linear-gradient(135deg,#1f8b8b,#0ea5a3); }
-    .dvh   { min-height: 100dvh; background: linear-gradient(135deg,#f97316,#ef4444); }
-    .svh   { min-height: 100svh; background: linear-gradient(135deg,#7c3aed,#2563eb); }
-    .lvh   { min-height: 100lvh; background: linear-gradient(135deg,#22c55e,#16a34a); }
-
-    .row { display: grid; grid-template-columns: 1fr; gap: var(--gap); }
-
-    .kbd { font: 600 12px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas; background:#0f172a; border:1px solid #1f2937; padding:2px 6px; border-radius:6px; }
-
-    .controls { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-    button {
-      background: #0b1020; border: 1px solid #243245; color: #e5e7eb; padding: 8px 10px; border-radius: 10px; cursor: pointer;
-    }
-    button:hover { background:#0f172a; }
-
-    .meters { display:grid; gap:6px; margin-top:10px; }
-    .meter { display:flex; justify-content:space-between; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas; font-size: 13px; }
-
-    footer {
-      position: sticky; bottom: 0; z-index: 10; padding: 8px 16px; background: rgba(11,16,32,0.9); backdrop-filter: blur(8px);
-      border-top: 1px solid #111827; display:flex; justify-content:space-between; align-items:center; gap:12px;
-    }
-    footer small { color: var(--muted); }
-
-    /* Προαιρετικό «simulate keyboard»: προσθέτει ασφαλή ζώνη στο κάτω μέρος */
-    .fake-keyboard-space { padding-bottom: 320px; }
-
-    /* Σημείωση για iOS safe areas */
-    .ios-safe { padding-bottom: env(safe-area-inset-bottom, 0); }
   </style>
 </head>
 <body>
-  <header>
-    <strong>vh vs dvh (και 100svh/100lvh)</strong>
-    <div class="muted">Κύλιση/άνοιγμα πληκτρολογίου στο κινητό → δείτε ποια πλακέτα αλλάζει ύψος.</div>
-  </header>
-
-  <div class="wrap">
-    <section class="card">
-      <p class="title"><code>min-height: 100vh</code></p>
-      <div id="hero-vh" class="hero vh ios-safe">
-        <div>Αυτό είναι με <span class="kbd">vh</span></div>
-        <input placeholder="Εστίασε εδώ για πληκτρολόγιο" />
-      </div>
-      <p class="muted">Σε mobile browsers, το <code>vh</code> συχνά <em>δεν</em> προσαρμόζεται όταν αλλάζει η chrome/address bar ή ανοίγει το πληκτρολόγιο.</p>
-    </section>
-
-    <section class="card">
-      <p class="title"><code>min-height: 100dvh</code></p>
-      <div id="hero-dvh" class="hero dvh ios-safe">
-        <div>Αυτό είναι με <span class="kbd">dvh</span> (dynamic)</div>
-        <input placeholder="Εστίασε εδώ για πληκτρολόγιο" />
-      </div>
-      <p class="muted">Το <code>dvh</code> ακολουθεί δυναμικά το <em>οπτικό</em> ύψος όταν η UI του browser αλλάζει.</p>
-    </section>
-
-    <section class="card">
-      <p class="title"><code>100svh</code> και <code>100lvh</code></p>
-      <div class="row">
-        <div id="hero-svh" class="hero svh ios-safe">
-          <div><span class="kbd">svh</span> – smallest viewport height</div>
-          <textarea rows="3" placeholder="Πληκτρολόγησε…"></textarea>
-        </div>
-        <div id="hero-lvh" class="hero lvh ios-safe">
-          <div><span class="kbd">lvh</span> – largest viewport height</div>
-          <input placeholder="Πεδίο εισαγωγής" />
-        </div>
-      </div>
-      <p class="muted">Χρήσιμα για σταθερές διατάξεις: <code>svh</code> δεσμεύει τον χώρο όταν το UI είναι «μέγιστο», ενώ το <code>lvh</code> όταν είναι «ελάχιστο».</p>
-    </section>
-
-    <section class="card">
-      <p class="title">Ζωντανές μετρήσεις</p>
-      <div class="muted">Παρακολουθήστε πώς αλλάζουν οι τιμές σε scroll/resize/πληκτρολόγιο.</div>
-      <div class="controls">
-        <button id="toggle-keyboard">Simulate keyboard (add bottom inset)</button>
-        <button id="force-resize">Trigger resize()</button>
-      </div>
-      <div class="meters">
-        <div class="meter"><span>window.innerHeight</span><span id="m-win">–</span></div>
-        <div class="meter"><span>#vh height</span><span id="m-vh">–</span></div>
-        <div class="meter"><span>#dvh height</span><span id="m-dvh">–</span></div>
-        <div class="meter"><span>#svh height</span><span id="m-svh">–</span></div>
-        <div class="meter"><span>#lvh height</span><span id="m-lvh">–</span></div>
-      </div>
-    </section>
-  </div>
-
-  <footer class="ios-safe">
-    <small>Συμβουλή: Δοκιμάστε σε κινητό. Κάντε scroll ώστε να κρύβεται/εμφανίζεται η address bar και πατήστε σε input για να ανοίξει το πληκτρολόγιο.</small>
-    <div class="controls">
-      <button id="scroll-top">Scroll to top</button>
-      <button id="scroll-bottom">Scroll down</button>
-    </div>
-  </footer>
-
-  <script>
-    const $ = (sel) => document.querySelector(sel);
-    const meters = {
-      win: $('#m-win'), vh: $('#m-vh'), dvh: $('#m-dvh'), svh: $('#m-svh'), lvh: $('#m-lvh')
-    };
-    const boxes = {
-      vh: $('#hero-vh'), dvh: $('#hero-dvh'), svh: $('#hero-svh'), lvh: $('#hero-lvh')
-    };
-
-    let fakeKeyboard = false;
-    function updateMeters() {
-      meters.win.textContent = window.innerHeight + 'px';
-      // Χρησιμοποιούμε getBoundingClientRect για να δούμε το πραγματικό rendered ύψος
-      meters.vh.textContent  = Math.round(boxes.vh.getBoundingClientRect().height)  + 'px';
-      meters.dvh.textContent = Math.round(boxes.dvh.getBoundingClientRect().height) + 'px';
-      meters.svh.textContent = Math.round(boxes.svh.getBoundingClientRect().height) + 'px';
-      meters.lvh.textContent = Math.round(boxes.lvh.getBoundingClientRect().height) + 'px';
-    }
-
-    // Ενημέρωση σε resize, orientationchange, focus/blur (πληκτρολόγιο)
-    ['resize', 'orientationchange'].forEach(evt => window.addEventListener(evt, updateMeters));
-    window.addEventListener('focusin', updateMeters);
-    window.addEventListener('focusout', updateMeters);
-    window.addEventListener('scroll', () => { requestAnimationFrame(updateMeters); }, {passive:true});
-
-    // Κουμπιά
-    $('#toggle-keyboard').addEventListener('click', () => {
-      fakeKeyboard = !fakeKeyboard;
-      document.body.classList.toggle('fake-keyboard-space', fakeKeyboard);
-      updateMeters();
-    });
-    $('#force-resize').addEventListener('click', () => { window.dispatchEvent(new Event('resize')); });
-    $('#scroll-top').addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
-    $('#scroll-bottom').addEventListener('click', () => window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'}));
-
-    // Αρχικό paint
-    updateMeters();
-  </script>
+  <section class="panel vh-panel">
+    <h2>100vh</h2>
+    <p>Σταθερό ύψος</p>
+    <input placeholder="Εστίασε εδώ…" />
+  </section>
+  <section class="panel dvh-panel">
+    <h2>100dvh</h2>
+    <p>Δυναμικό ύψος</p>
+    <input placeholder="Εστίασε εδώ…" />
+  </section>
 </body>
 </html>
