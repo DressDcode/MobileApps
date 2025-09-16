@@ -3,55 +3,97 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>vh vs dvh (side by side)</title>
+  <title>100vh vs 100dvh – iPhone demo</title>
   <style>
     * { box-sizing: border-box; margin: 0; }
-    html, body { min-height: 100%; }     /* όχι height:100% */
+    html, body { min-height: 100%; }
     body {
-      display: flex;                      /* δίπλα-δίπλα */
-      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;               /* δίπλα-δίπλα */
+      font-family: -apple-system, system-ui, sans-serif;
+      background: #0b1220;
+      color: #fff;
     }
     .panel {
+      position: relative;
       flex: 1;
+      overflow: hidden;            /* για να φαίνεται όταν κάτι «κόβεται» */
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      gap: .75rem;
-      color: #fff;
-      padding: 1rem;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px;
       text-align: center;
     }
-    .vh-panel  { background: #0d8b86; height: 100vh;  }
-    .dvh-panel { background: #ef5247; height: 100dvh; }
+    .vh  { background:#0d8b86; height: 100vh;  }
+    .dvh { background:#ef5247; height: 100dvh; }
 
-    input {
-      padding: .6rem .8rem;
-      border-radius: .6rem;
-      border: 0;
-      width: 80%;
-      max-width: 240px;
-      font-size: 16px; /* για iOS να μην κάνει zoom */
+    h1 { font-size: 32px; line-height: 1.1; }
+    p  { opacity: .9; }
+
+    /* μεγάλοι μετρητές ώστε να φαίνεται ότι αλλάζουν */
+    .meter {
+      position: absolute;
+      top: 10px; left: 10px;
+      font: 700 14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: rgba(0,0,0,.35);
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: left;
+      backdrop-filter: blur(6px);
     }
 
-    /* Λίγη extra κύλιση ώστε να καταρρέει/εμφανίζεται η address bar */
+    input {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 0;
+      width: 80%;
+      max-width: 260px;
+      font-size: 16px; /* iOS: αποφυγή zoom */
+      background: #fff; color: #111;
+    }
+
+    /* ένα εσωτερικό bottom bar σε κάθε panel */
+    .bottom {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 10px 12px;
+      background: rgba(0,0,0,.35);
+      border-top: 1px solid rgba(255,255,255,.2);
+      text-align: center;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+    }
+
+    /* λίγη επιπλέον κύλιση για να «παίζει» η address bar */
     .spacer { height: 120vh; }
   </style>
 </head>
 <body>
-  <section class="panel vh-panel">
-    <h2>100vh</h2>
+  <section class="panel vh">
+    <div class="meter" id="m-vh">vh: –px<br>visual: –px</div>
+    <h1>100vh</h1>
     <p>Σταθερό ύψος</p>
     <input placeholder="Εστίασε εδώ…" />
+    <div class="bottom">Bottom μέσα στο 100vh</div>
   </section>
 
-  <section class="panel dvh-panel">
-    <h2>100dvh</h2>
+  <section class="panel dvh">
+    <div class="meter" id="m-dvh">dvh: –px<br>visual: –px</div>
+    <h1>100dvh</h1>
     <p>Δυναμικό ύψος</p>
     <input placeholder="Εστίασε εδώ…" />
+    <div class="bottom">Bottom μέσα στο 100dvh</div>
   </section>
 
-  <!-- Επιπλέον ύψος για να υπάρχει scroll στο mobile -->
+  <!-- δημιουργεί scroll ώστε να κρύβεται/εμφανίζεται η address bar -->
   <div class="spacer" aria-hidden="true"></div>
-</body>
-</html>
+
+  <script>
+    const vhEl  = document.querySelector('.vh');
+    const dvhEl = document.querySelector('.dvh');
+    const mVh   = document.getElementById('m-vh');
+    const mDvh  = document.getElementById('m-dvh');
+
+    function h(el){ return Math.round(el.getBoundingClien
