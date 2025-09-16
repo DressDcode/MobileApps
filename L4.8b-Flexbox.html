@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Flexbox Responsive Παράδειγμα</title>
+  <style>
+    .cards {
+      display: flex;             
+      gap: 10px;                 
+      justify-content: center;   
+      flex-wrap: wrap;           /* επιτρέπει στα items να "σπάνε" σε επόμενη σειρά */
+    }
+
+    .cards article {
+      flex: 1 1 200px;           /* ευέλικτο πλάτος, με ελάχιστο 200px */
+      padding: 20px;
+      background: lightblue;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    /* Για μικρές οθόνες (π.χ. κινητά) */
+    @media (max-width: 600px) {
+      .cards {
+        flex-direction: column;  /* κάθετη διάταξη */
+        align-items: stretch;    /* κάρτες γεμίζουν όλο το πλάτος */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cards">
+    <article>Κάρτα 1</article>
+    <article>Κάρτα 2</article>
+    <article>Κάρτα 3</article>
+  </div>
+</body>
+</html>
