@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fluid Typography — vw + clamp() (Simple, Single File)</title>
+  <style>
+    :root { --bg:#0b0c10; --panel:#111317; --muted:#20242b; --fg:#e6e8eb; --fg2:#aab0b6; --p-min:16px; --p-max:21px; }
+    html { color-scheme: dark; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", Arial; background:var(--bg); color:var(--fg); }
+    .container { width:min(100%, 1100px); margin-inline:auto; padding-inline:1rem; }
+    header { position:sticky; top:0; z-index:10; background:#11151aee; border-bottom:1px solid #1b1f27; backdrop-filter: blur(8px); }
+    header .bar { display:flex; gap:.75rem; align-items:center; justify-content:space-between; padding:.7rem 1rem; }
+    .pills { display:grid; grid-auto-flow:column; gap:.5rem; white-space:nowrap; overflow:auto; font-size:13px; color:var(--fg2); }
+    .pill { padding:.25rem .6rem; background:var(--muted); border-radius:999px; border:1px solid #242a32; }
+
+    .hero { padding:clamp(1.5rem, 5vw, 4rem) 0 1rem; }
+    .hero h1 { font-size:clamp(40px, 8vw, 120px); line-height:1.12; letter-spacing:-.02em; margin:0 0 .3rem; }
+    .hero p  { font-size:clamp(18px, 2.8vw, 28px); color:var(--fg2); margin:.2rem 0 0; }
+
+    article { padding: 1rem 0 2rem; }
+    .prose { max-width:65ch; }
+    .prose p { font-size:clamp(var(--p-min), 2.5vw, var(--p-max)); line-height:1.65; }
+
+    /* LAB */
+    .lab { border-top:1px dashed #2a313a; padding:clamp(1rem, 4vw, 2rem) 0 3rem; }
+    .controls { display:grid; grid-template-columns: 150px 1fr auto; gap:.6rem; align-items:center; }
+    .controls output { font-size:13px; color:var(--fg2); }
+    .controls .row { display:contents; }
+    .frame-wrap { margin-top:1rem; background:#0c0f14; border:1px solid #1b1f27; border-radius:12px; padding:.75rem; }
+    iframe.demo { width:100%; height:380px; border:0; display:block; background:#0a0d12; border-radius:8px; }
+    .btn { font-size:14px; padding:.5rem .9rem; border-radius:999px; background:#151a21; color:var(--fg); border:1px solid #2a313a; cursor:pointer; }
+    .btn-group { display:flex; gap:.5rem; }
+
+    footer { color:var(--fg2); padding: 1rem 0 3rem; font-size:13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar container">
+      <strong>Fluid Typography Demo</strong>
+      <div class="pills">
+        <span class="pill" id="vwpill">1vw = ?px</span>
+        <span class="pill" id="vppill">Viewport: ? × ?</span>
+        <span class="pill" id="h1pill">H1: ?</span>
+        <span class="pill" id="ppill">P: ?</span>
+        <span class="pill" id="modepill">Clamp: ON</span>
+        <span class="pill" id="wpill">W: 768px</span>
+        <span class="pill" id="hpill">H: 380px</span>
+        <span class="pill" id="lhpill">LH: Normal</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Fluid Type — vw + clamp()</h1>
+      <p>Ο τίτλος κλιμακώνεται ρευστά με ασφαλή όρια. Το σώμα έχει clamp(16–21px).</p>
+    </section>
+
+    <article>
+      <div class="prose">
+        <p>Σε κινητό το pinch‑zoom συνήθως δεν αλλάζει τα <code>vw</code>. Για live επίδειξη χρησιμοποιούμε το παρακάτω "μικρό παράθυρο" (iframe) και sliders για πλάτος/ύψος.</p>
+      </div>
+    </article>
+
+    <section class="lab" id="lab">
+      <h2 class="prose">Viewport Lab (πλάτος/ύψος + clamp + line-height)</h2>
+      <div class="controls">
+        <div class="row">
+          <label for="w">Πλάτος</label>
+          <input id="w" type="range" min="280" max="2000" step="1" value="768" />
+          <output id="wout">768px</output>
+        </div>
+        <div class="row">
+          <label for="h">Ύψος</label>
+          <input id="h" type="range" min="240" max="900" step="1" value="380" />
+          <output id="hout">380px</output>
+        </div>
+        <div class="row">
+          <label>Clamp</label>
+          <div class="btn-group">
+            <button class="btn" id="on">ON</button>
+            <button class="btn" id="off">OFF</button>
+          </div>
+          <output>—</output>
+        </div>
+        <div class="row">
+          <label for="lh">Line-height</label>
+          <select id="lh">
+            <option value="normal" selected>Normal (H1 1.12 / P 1.6)</option>
+            <option value="tight">Tight (1.05 / 1.4)</option>
+            <option value="loose">Loose (1.25 / 1.85)</option>
+          </select>
+          <output>—</output>
+        </div>
+      </div>
+
+      <div class="frame-wrap">
+        <iframe id="frame" class="demo" title="Fluid Type Frame"></iframe>
+      </div>
+    </section>
+
+    <footer>
+      Tip: Βάλε πλάτος κάτω από ~640px για να δεις το ελάχιστο 16px στο σώμα. Με OFF βλέπεις «καθαρό» vw χωρίς όρια.
+    </footer>
+  </main>
+
+  <script>
+  (function(){
+    'use strict';
+    // ===== Header metrics (works on the main page) =====
+    function updateHeader(){
+      const vwpx = window.innerWidth/100;
+      document.getElementById('vwpill').textContent = `1vw = ${vwpx.toFixed(2)}px`;
+      document.getElementById('vppill').textContent = `Viewport: ${window.innerWidth} × ${window.innerHeight}`;
+      const h1 = document.querySelector('.hero h1');
+      const p  = document.querySelector('.prose p');
+      if(h1&&p){
+        document.getElementById('h1pill').textContent = `H1: ${getComputedStyle(h1).fontSize}`;
+        document.getElementById('ppill').textContent  = `P: ${getComputedStyle(p).fontSize}`;
+      }
+    }
+    window.addEventListener('resize', updateHeader);
+    window.addEventListener('DOMContentLoaded', updateHeader);
+
+    // ===== Build iframe document (self-updating) =====
+    const src = `<!doctype html>
+<html lang=\"el\"><head><meta charset=\"utf-8\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+<style>
+:root{ --p-min:16px; --p-max:21px; --lh-h1:1.12; --lh-p:1.6; color-scheme:dark; }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, \"Noto Sans\", Arial; background:#0b0c10; color:#e6e8eb;}
+.wrap{min-height:100svh; display:grid; place-content:center; padding:1rem}
+ h1{font-size:clamp(40px, 8vw, 120px); line-height:var(--lh-h1); margin:0 0 .3em; text-align:center}
+ p{font-size:clamp(var(--p-min), 2.5vw, var(--p-max)); line-height:var(--lh-p); color:#b7bdc4; text-align:center; max-width:65ch; margin:0 auto}
+ body.noclamp h1{font-size:8vw}
+ body.noclamp p{font-size:2.5vw}
+.meta{position:fixed; inset:auto 0 0 0; background:#0f1217; border-top:1px solid #1b1f27; font:13px/1.4 system-ui; color:#aab0b6; padding:.5rem 1rem; display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap}
+</style></head>
+<body>
+  <div class=\"wrap\"><div>
+    <h1>Fluid type στο δικό του viewport</h1>
+    <p>Σύρε τα sliders στο parent. Άνοιξε/κλείσε το clamp. Άλλαξε line‑height.</p>
+  </div></div>
+  <div id=\"meta\" class=\"meta\">—</div>
+<script>
+(function(){
+  function fmt(){
+    const h1=document.querySelector('h1'); const p=document.querySelector('p');
+    const txt = `viewport: ${innerWidth}×${innerHeight} — 1vw=${(innerWidth/100).toFixed(2)}px — H1:${getComputedStyle(h1).fontSize} — P:${getComputedStyle(p).fontSize} — LH(H1):${getComputedStyle(h1).lineHeight} — LH(P):${getComputedStyle(p).lineHeight}`;
+    document.getElementById('meta').textContent = txt;
+  }
+  let lw=0, lh=0; // self-monitor with rAF, no dependency on resize firing
+  function loop(){
+    if(innerWidth!==lw || innerHeight!==lh){ lw=innerWidth; lh=innerHeight; fmt(); }
+    requestAnimationFrame(loop);
+  }
+  addEventListener('DOMContentLoaded', ()=>{ fmt(); loop(); });
+})();
+<\/script>
+</body></html>`;
+
+    const frame = document.getElementById('frame');
+    frame.srcdoc = src;
+
+    // ===== Controls =====
+    const w = document.getElementById('w');
+    const h = document.getElementById('h');
+    const wout = document.getElementById('wout');
+    const hout = document.getElementById('hout');
+    const wpill = document.getElementById('wpill');
+    const hpill = document.getElementById('hpill');
+    const modepill = document.getElementById('modepill');
+    const lhsel = document.getElementById('lh');
+    const lhpill = document.getElementById('lhpill');
+    const btnOn = document.getElementById('on');
+    const btnOff = document.getElementById('off');
+
+    function setW(px){ frame.style.width = px + 'px'; wout.textContent = px + 'px'; wpill.textContent = 'W: ' + px + 'px'; }
+    function setH(px){ frame.style.height= px + 'px'; hout.textContent = px + 'px'; hpill.textContent = 'H: ' + px + 'px'; }
+    function setClamp(on){ const doc = frame.contentDocument; if(!doc) return; doc.body.classList.toggle('noclamp', !on); modepill.textContent = on? 'Clamp: ON' : 'Clamp: OFF (vw)'; }
+    function setLH(mode){ const doc = frame.contentDocument; if(!doc) return; const root = doc.documentElement; if(mode==='tight'){ root.style.setProperty('--lh-h1', 1.05); root.style.setProperty('--lh-p', 1.4); lhpill.textContent='LH: Tight'; } else if(mode==='loose'){ root.style.setProperty('--lh-h1', 1.25); root.style.setProperty('--lh-p', 1.85); lhpill.textContent='LH: Loose'; } else { root.style.setProperty('--lh-h1', 1.12); root.style.setProperty('--lh-p', 1.6); lhpill.textContent='LH: Normal'; } }
+
+    // Hook events
+    w.addEventListener('input', e=> setW(parseInt(e.target.value,10)));
+    h.addEventListener('input', e=> setH(parseInt(e.target.value,10)));
+    btnOn.addEventListener('click', ()=> setClamp(true));
+    btnOff.addEventListener('click', ()=> setClamp(false));
+    lhsel.addEventListener('change', e=> setLH(e.target.value));
+
+    // Init after iframe loads to ensure document is ready
+    frame.addEventListener('load', ()=>{
+      setClamp(true);
+      setLH('normal');
+      setW(parseInt(w.value,10));
+      setH(parseInt(h.value,10));
+    });
+  })();
+  </script>
+</body>
+</html>
