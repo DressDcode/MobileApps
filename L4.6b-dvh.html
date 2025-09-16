@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>100dvh με περιεχόμενο</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, system-ui, sans-serif;
+      background:#0b1220; color:#fff;
+    }
+    .panel {
+      height: 100dvh;         /* προσαρμόζεται στο ορατό ύψος */
+      background: #ef5247;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;         /* αν δεν χωράει το περιεχόμενο, εμφανίζεται scroll */
+    }
+    h1 { font-size: 24px; margin-bottom: 1rem; }
+    p  { margin-bottom: 1rem; line-height: 1.6; }
+    img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    footer {
+      margin-top: auto;       /* κολλάει στο κάτω μέρος του panel */
+      padding: .75rem;
+      background: rgba(0,0,0,.4);
+      text-align: center;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <section class="panel">
+    <h1>Demo: 100dvh Panel</h1>
+    <p>
+      Αυτό το panel έχει ύψος ίσο με το τρέχον ορατό viewport (100dvh).
+      Το κείμενο και η εικόνα μέσα του <strong>δεν αλλάζουν μέγεθος</strong>
+      όταν μικραίνει ή μεγαλώνει το panel — απλά μπορεί να εμφανιστεί scroll.
+    </p>
+    <img src="https://picsum.photos/600/300" alt="Δείγμα εικόνας">
+    <p>
+      Δοκίμασε να πατήσεις στο πεδίο κειμένου για να ανοίξει το πληκτρολόγιο.
+      Θα δεις ότι το panel μικραίνει σε ύψος, αλλά το περιεχόμενο παραμένει ίδιο.
+    </p>
+    <input type="text" placeholder="Πληκτρολόγησε κάτι…">
+    <footer>Εδώ είναι footer κολλημένο στο κάτω μέρος</footer>
+  </section>
+</body>
+</html>
