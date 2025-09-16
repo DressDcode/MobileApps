@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Flexbox Παράδειγμα</title>
+  <style>
+    .cards {
+      display: flex;              /* ενεργοποιεί το flexbox */
+      gap: 10px;                  /* κενό ανάμεσα στις κάρτες */
+      justify-content: center;    /* κεντράρει οριζόντια */
+    }
+
+    .cards article {
+      flex: 1;                    /* όλες οι κάρτες έχουν ίσο πλάτος */
+      padding: 20px;
+      background: lightblue;
+      text-align: center;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="cards">
+    <article>Κάρτα 1</article>
+    <article>Κάρτα 2</article>
+    <article>Κάρτα 3</article>
+  </div>
+</body>
+</html>
