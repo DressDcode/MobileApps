@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Responsive Flexbox Example</title>
+  <style>
+    .row {
+      display: flex;
+      flex-wrap: wrap;   /* επιτρέπει στις στήλες να κατεβαίνουν */
+      gap: 10px;         /* απόσταση μεταξύ τους */
+    }
+    .col {
+      flex: 1;           /* μοιράζει τον χώρο */
+      min-width: 250px;  /* όταν δεν χωράει, "σπάει" σε νέα γραμμή */
+      padding: 20px;
+      background: lightgreen;
+      box-sizing: border-box;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* Προαιρετικά: πιο ωραίο look σε μεγαλύτερες οθόνες */
+    @media (min-width: 768px) {
+      .col {
+        min-width: 0;    /* δεν χρειάζεται min-width εδώ */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="col">Στήλη 1</div>
+    <div class="col">Στήλη 2</div>
+    <div class="col">Στήλη 3</div>
+  </div>
+</body>
+</html>
