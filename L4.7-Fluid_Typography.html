@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fluid Typography — FINAL v2 (vw + clamp)</title>
+  <title>Fluid Typography — FINAL v3 (vw + clamp)</title>
   <style>
     :root { --bg:#0b0c10; --panel:#111317; --muted:#20242b; --fg:#e6e8eb; --fg2:#aab0b6; --p-min:16px; --p-max:21px; }
     html { color-scheme: dark; }
@@ -29,7 +29,7 @@
     .controls .row { display:contents; }
     .frame-wrap { margin-top:1rem; background:#0c0f14; border:1px solid #1b1f27; border-radius:12px; padding:.75rem; }
     iframe.demo { width:100%; height:380px; border:0; display:block; background:#0a0d12; border-radius:8px; }
-    .btn { font-size:14px; padding:.5rem .9rem; border-radius:999px; background:#151a21; color:var(--fg); border:1px solid #2a313a; cursor:pointer; }
+    .btn { font-size:14px; padding:.5rem .9rem; border-radius:999px; background:#151a21; color:#fg; border:1px solid #2a313a; cursor:pointer; }
     .btn-group { display:flex; gap:.5rem; }
     footer { color:var(--fg2); padding: 1rem 0 3rem; font-size:13px; }
   </style>
@@ -59,7 +59,7 @@
 
     <article>
       <div class="prose">
-        <p>Σε κινητό το pinch‑zoom συνήθως δεν αλλάζει τα <code>vw</code>. Για live επίδειξη χρησιμοποιούμε το παρακάτω "μικρό παράθυρο" (iframe) και sliders για πλάτος/ύψος.</p>
+        <p>Σε κινητό το pinch-zoom συνήθως δεν αλλάζει τα <code>vw</code>. Για live επίδειξη χρησιμοποιούμε το παρακάτω "μικρό παράθυρο" (iframe) και sliders για πλάτος/ύψος.</p>
       </div>
     </article>
 
@@ -108,22 +108,8 @@
   <script>
   (function(){
     'use strict';
-    // ===== Header metrics =====
-    function updateHeader(){
-      var vwpx = window.innerWidth/100;
-      document.getElementById('vwpill').textContent = '1vw = ' + vwpx.toFixed(2) + 'px';
-      document.getElementById('vppill').textContent = 'Viewport: ' + window.innerWidth + ' × ' + window.innerHeight;
-      var h1 = document.querySelector('.hero h1');
-      var p  = document.querySelector('.prose p');
-      if(h1&&p){
-        document.getElementById('h1pill').textContent = 'H1: ' + getComputedStyle(h1).fontSize;
-        document.getElementById('ppill').textContent  = 'P: ' + getComputedStyle(p).fontSize;
-      }
-    }
-    window.addEventListener('resize', updateHeader);
-    document.addEventListener('DOMContentLoaded', updateHeader);
 
-    // ===== Build iframe document (always-refresh metrics via rAF) =====
+    // ---------- Χτίσιμο του iframe (ίδιο περιεχόμενο με before) ----------
     function buildIframeHTML(){
       var parts = [];
       parts.push('<!doctype html>');
@@ -139,7 +125,7 @@
       parts.push('body.noclamp h1{font-size:8vw} body.noclamp p{font-size:2.5vw}');
       parts.push('.meta{position:fixed; inset:auto 0 0 0; background:#0f1217; border-top:1px solid #1b1f27; font:13px/1.4 system-ui; color:#aab0b6; padding:.5rem 1rem; display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap}');
       parts.push('</style></head><body>');
-      parts.push('<div class="wrap"><div><h1>Fluid type στο δικό του viewport</h1><p>Σύρε τα sliders στο parent. Άνοιξε/κλείσε το clamp. Άλλαξε line‑height.</p></div></div>');
+      parts.push('<div class="wrap"><div><h1>Fluid type στο δικό του viewport</h1><p>Σύρε τα sliders στο parent. Άνοιξε/κλείσε το clamp. Άλλαξε line-height.</p></div></div>');
       parts.push('<div id="meta" class="meta">—</div>');
       parts.push('<scr' + 'ipt>(function(){');
       parts.push('function fmt(){var h1=document.querySelector("h1"), p=document.querySelector("p");');
@@ -156,7 +142,7 @@
     var html = buildIframeHTML();
     try { frame.setAttribute('srcdoc', html); } catch(e) { var doc = frame.contentWindow.document; doc.open(); doc.write(html); doc.close(); }
 
-    // ===== Controls =====
+    // ---------- Controls ----------
     var w = document.getElementById('w');
     var h = document.getElementById('h');
     var wout = document.getElementById('wout');
@@ -178,12 +164,44 @@
     frame.addEventListener('load', initOnce);
     setTimeout(initOnce, 50);
 
-    // Hook events (input + change for iOS reliability)
-    function hook(){ w.addEventListener('input', function(e){ setW(parseInt(e.target.value,10)); }); w.addEventListener('change', function(e){ setW(parseInt(e.target.value,10)); });
-      h.addEventListener('input', function(e){ setH(parseInt(e.target.value,10)); }); h.addEventListener('change', function(e){ setH(parseInt(e.target.value,10)); });
-      btnOn.addEventListener('click', function(){ setClamp(true); }); btnOff.addEventListener('click', function(){ setClamp(false); });
-      lhsel.addEventListener('change', function(e){ setLH(e.target.value); }); }
+    // Hook events (input + change για καλύτερη συμβατότητα iOS)
+    function hook(){
+      w.addEventListener('input', e => setW(parseInt(e.target.value,10)));
+      w.addEventListener('change', e => setW(parseInt(e.target.value,10)));
+      h.addEventListener('input', e => setH(parseInt(e.target.value,10)));
+      h.addEventListener('change', e => setH(parseInt(e.target.value,10)));
+      btnOn.addEventListener('click', () => setClamp(true));
+      btnOff.addEventListener('click', () => setClamp(false));
+      lhsel.addEventListener('change', e => setLH(e.target.value));
+    }
     document.addEventListener('DOMContentLoaded', hook);
+
+    // ---------- FIX: Header metrics από το iframe ----------
+    // Μετρούμε συνεχώς από frame.contentWindow + contentDocument
+    function updateHeaderFrom(win, doc){
+      var vwpx = win.innerWidth / 100;
+      document.getElementById('vwpill').textContent = '1vw = ' + vwpx.toFixed(2) + 'px';
+      document.getElementById('vppill').textContent = 'Viewport: ' + win.innerWidth + ' × ' + win.innerHeight;
+
+      var h1 = doc.querySelector('h1');
+      var p  = doc.querySelector('p');
+      if (h1 && p) {
+        document.getElementById('h1pill').textContent = 'H1: ' + win.getComputedStyle(h1).fontSize;
+        document.getElementById('ppill').textContent  = 'P: '  + win.getComputedStyle(p).fontSize;
+      }
+    }
+
+    function syncLoop(){
+      var fw = frame.contentWindow;
+      var fd = frame.contentDocument;
+      if (fw && fd && fd.readyState === 'complete') {
+        updateHeaderFrom(fw, fd);                   // μετράμε το viewport του iframe
+      } else {
+        updateHeaderFrom(window, document);         // fallback μέχρι να φορτώσει
+      }
+      requestAnimationFrame(syncLoop);
+    }
+    document.addEventListener('DOMContentLoaded', syncLoop);
   })();
   </script>
 </body>
