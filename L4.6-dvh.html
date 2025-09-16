@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>100vh vs 100dvh – iPhone demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>100vh vs 100dvh — Mobile Demo</title>
   <style>
     * { box-sizing: border-box; margin: 0; }
     html, body { min-height: 100%; }
     body {
-      display: flex;               /* δίπλα-δίπλα */
-      font-family: -apple-system, system-ui, sans-serif;
-      background: #0b1220;
-      color: #fff;
+      font-family: -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:#0b1220; color:#fff;
     }
+
+    /* ————— Layout ————— */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(11,18,32,.9);
+      border-bottom: 1px solid #141c2a;
+      padding: .6rem 1rem env(safe-area-inset-top) 1rem;
+      backdrop-filter: blur(8px);
+      display: flex; gap: .75rem; align-items: center; justify-content: space-between;
+      font-size: 14px;
+    }
+    .pills { display:flex; gap:.5rem; overflow:auto; white-space:nowrap; }
+    .pill  { background:#101829; border:1px solid #1f2a3c; border-radius:999px; padding:.25rem .6rem; color:#cdd3db; }
+
+    .wrap {
+      display: flex;
+      gap: 2px;               /* λεπτό «χώρισμα» για να ξεχωρίζουν */
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
     .panel {
       position: relative;
       flex: 1;
-      overflow: hidden;            /* για να φαίνεται όταν κάτι «κόβεται» */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
+      display: flex; align-items:center; justify-content:center; gap: 12px;
       padding: 16px;
       text-align: center;
+      overflow: hidden;       /* να φαίνεται όταν κάτι κόβεται */
     }
     .vh  { background:#0d8b86; height: 100vh;  }
     .dvh { background:#ef5247; height: 100dvh; }
@@ -31,69 +45,122 @@
     h1 { font-size: 32px; line-height: 1.1; }
     p  { opacity: .9; }
 
-    /* μεγάλοι μετρητές ώστε να φαίνεται ότι αλλάζουν */
+    /* επισημασμένος μετρητής μέσα σε κάθε πάνελ */
     .meter {
-      position: absolute;
-      top: 10px; left: 10px;
-      font: 700 14px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      position: absolute; top: 10px; left: 10px;
+      font: 700 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       background: rgba(0,0,0,.35);
       border: 1px solid rgba(255,255,255,.15);
-      border-radius: 8px;
-      padding: 8px 10px;
-      text-align: left;
+      border-radius: 8px; padding: 8px 10px; text-align: left;
       backdrop-filter: blur(6px);
     }
 
     input {
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 0;
-      width: 80%;
-      max-width: 260px;
+      padding: 10px 12px; border-radius: 10px; border: 0;
+      width: 80%; max-width: 260px;
       font-size: 16px; /* iOS: αποφυγή zoom */
-      background: #fff; color: #111;
+      background:#fff; color:#111;
     }
 
-    /* ένα εσωτερικό bottom bar σε κάθε panel */
+    /* κάτω μπάρα μέσα στο κάθε πάνελ: εδώ φαίνεται οπτικά η διαφορά */
     .bottom {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
+      position: absolute; left: 0; right: 0; bottom: 0;
       padding: 10px 12px;
       background: rgba(0,0,0,.35);
       border-top: 1px solid rgba(255,255,255,.2);
-      text-align: center;
-      font-weight: 700;
+      text-align: center; font-weight: 700;
       backdrop-filter: blur(6px);
     }
 
-    /* λίγη επιπλέον κύλιση για να «παίζει» η address bar */
+    /* extra scroll ώστε να καταρρέει/εμφανίζεται η address bar */
     .spacer { height: 120vh; }
+    footer { color:#aab3c0; font-size:13px; padding: .8rem 1rem 2rem; }
   </style>
 </head>
 <body>
-  <section class="panel vh">
-    <div class="meter" id="m-vh">vh: –px<br>visual: –px</div>
-    <h1>100vh</h1>
-    <p>Σταθερό ύψος</p>
-    <input placeholder="Εστίασε εδώ…" />
-    <div class="bottom">Bottom μέσα στο 100vh</div>
-  </section>
+  <header>
+    <strong>vh vs dvh (κινητό)</strong>
+    <div class="pills">
+      <span class="pill" id="vp">visualViewport: —×—</span>
+      <span class="pill" id="bar">address bar: —</span>
+    </div>
+  </header>
 
-  <section class="panel dvh">
-    <div class="meter" id="m-dvh">dvh: –px<br>visual: –px</div>
-    <h1>100dvh</h1>
-    <p>Δυναμικό ύψος</p>
-    <input placeholder="Εστίασε εδώ…" />
-    <div class="bottom">Bottom μέσα στο 100dvh</div>
-  </section>
-
-  <!-- δημιουργεί scroll ώστε να κρύβεται/εμφανίζεται η address bar -->
+  <!-- λίγος χώρος πάνω για να ενεργοποιηθεί η κατάρρευση της address bar -->
   <div class="spacer" aria-hidden="true"></div>
 
-  <script>
-    const vhEl  = document.querySelector('.vh');
-    const dvhEl = document.querySelector('.dvh');
-    const mVh   = document.getElementById('m-vh');
-    const mDvh  = document.getElementById('m-dvh');
+  <main class="wrap">
+    <section class="panel vh">
+      <div class="meter" id="m-vh">vh box: —px</div>
+      <div>
+        <h1>100vh</h1>
+        <p>Σταθερό ύψος</p>
+        <input placeholder="Πάτησε εδώ…" />
+      </div>
+      <div class="bottom">Bottom μέσα στο 100vh</div>
+    </section>
 
-    function h(el){ return Math.round(el.getBoundingClien
+    <section class="panel dvh">
+      <div class="meter" id="m-dvh">dvh box: —px</div>
+      <div>
+        <h1>100dvh</h1>
+        <p>Δυναμικό ύψος</p>
+        <input placeholder="Πάτησε εδώ…" />
+      </div>
+      <div class="bottom">Bottom μέσα στο 100dvh</div>
+    </section>
+  </main>
+
+  <!-- κι άλλος χώρος για κύλιση -->
+  <div class="spacer" aria-hidden="true"></div>
+  <footer>Tip: Κάνε λίγο scroll ώστε να κρυφτεί/εμφανιστεί η address bar. Πάτα σε ένα input για να ανοίξει το πληκτρολόγιο.</footer>
+
+  <script>
+    // Ζωντανές μετρήσεις & ανίχνευση address bar
+    const vhBox = document.querySelector('.vh');
+    const dvhBox = document.querySelector('.dvh');
+    const mVh = document.getElementById('m-vh');
+    const mDvh = document.getElementById('m-dvh');
+    const vp = document.getElementById('vp');
+    const bar = document.getElementById('bar');
+
+    let lastInnerH = window.innerHeight;
+
+    function boxH(el){ return Math.round(el.getBoundingClientRect().height); }
+    function vvh(){ return Math.round((window.visualViewport?.height) || window.innerHeight); }
+
+    function update(){
+      // Μετρήσεις panels
+      mVh.textContent  = 'vh box: '  + boxH(vhBox)  + 'px';
+      mDvh.textContent = 'dvh box: ' + boxH(dvhBox) + 'px';
+
+      // Visual viewport
+      vp.textContent = 'visualViewport: ' + vvh() + '×' + (window.visualViewport?.width || window.innerWidth);
+
+      // Πρόχειρη εκτίμηση «address bar ύψος»
+      const barHeight = window.innerHeight - vvh();
+      bar.textContent = 'address bar: ' + (barHeight > 0 ? barHeight + 'px' : '0px');
+
+      lastInnerH = window.innerHeight;
+    }
+
+    const sched = () => requestAnimationFrame(update);
+
+    ['resize','orientationchange','scroll'].forEach(ev =>
+      window.addEventListener(ev, sched, {passive:true})
+    );
+
+    // iOS Safari: visualViewport event για keyboard/address bar
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', sched);
+      window.visualViewport.addEventListener('scroll', sched);
+    }
+
+    window.addEventListener('focusin', sched);
+    window.addEventListener('focusout', sched);
+
+    // αρχικό paint
+    update();
+  </script>
+</body>
+</html>
