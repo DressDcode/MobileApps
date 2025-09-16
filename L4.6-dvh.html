@@ -2,14 +2,14 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>vh vs dvh Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>vh vs dvh (side by side)</title>
   <style>
     * { box-sizing: border-box; margin: 0; }
+    html, body { min-height: 100%; }     /* όχι height:100% */
     body {
-      display: flex;
-      height: 100%; /* για να μοιραστούν στην οθόνη */
-      font-family: sans-serif;
+      display: flex;                      /* δίπλα-δίπλα */
+      font-family: system-ui, -apple-system, sans-serif;
     }
     .panel {
       flex: 1;
@@ -17,24 +17,25 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      color: white;
-      font-size: 1.2rem;
+      gap: .75rem;
+      color: #fff;
       padding: 1rem;
+      text-align: center;
     }
-    .vh-panel {
-      background: teal;
-      min-height: 100vh;
-    }
-    .dvh-panel {
-      background: tomato;
-      min-height: 100dvh;
-    }
+    .vh-panel  { background: #0d8b86; height: 100vh;  }
+    .dvh-panel { background: #ef5247; height: 100dvh; }
+
     input {
-      margin-top: 1rem;
-      padding: 0.5rem;
-      font-size: 1rem;
+      padding: .6rem .8rem;
+      border-radius: .6rem;
+      border: 0;
       width: 80%;
+      max-width: 240px;
+      font-size: 16px; /* για iOS να μην κάνει zoom */
     }
+
+    /* Λίγη extra κύλιση ώστε να καταρρέει/εμφανίζεται η address bar */
+    .spacer { height: 120vh; }
   </style>
 </head>
 <body>
@@ -43,10 +44,14 @@
     <p>Σταθερό ύψος</p>
     <input placeholder="Εστίασε εδώ…" />
   </section>
+
   <section class="panel dvh-panel">
     <h2>100dvh</h2>
     <p>Δυναμικό ύψος</p>
     <input placeholder="Εστίασε εδώ…" />
   </section>
+
+  <!-- Επιπλέον ύψος για να υπάρχει scroll στο mobile -->
+  <div class="spacer" aria-hidden="true"></div>
 </body>
 </html>
