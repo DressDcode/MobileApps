@@ -1,37 +1,523 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="el">
 <head>
-  <meta charset="UTF-8">
-  <title>Responsive Flexbox Example</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flexbox Live Playground</title>
   <style>
-    .row {
-      display: flex;
-      flex-wrap: wrap;   /* επιτρέπει στις στήλες να κατεβαίνουν */
-      gap: 10px;         /* απόσταση μεταξύ τους */
+    :root {
+      --bg: #0b1020;
+      --panel: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #4f46e5;
+      --card: #111827;
+      --border: #1f2937;
     }
-    .col {
-      flex: 1;           /* μοιράζει τον χώρο */
-      min-width: 250px;  /* όταν δεν χωράει, "σπάει" σε νέα γραμμή */
-      padding: 20px;
-      background: lightgreen;
-      box-sizing: border-box;
-      text-align: center;
-      font-weight: bold;
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text); background: linear-gradient(180deg, #0b1020, #0b1020 40%, #0a0f1a);
+    }
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 14px 16px; }
+
+    .controls { display: grid; gap: 10px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    @media (max-width: 980px) { .controls { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .controls { grid-template-columns: repeat(2, 1fr); } }
+
+    .control { display: flex; flex-direction: column; gap: 6px; }
+    .control label { font-size: 12px; color: var(--muted); }
+    .control select, .control input[type="number"], .control input[type="range"], .control input[type="text"] {
+      width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border);
+      background: #0b1222; color: var(--text);
+    }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .btn {
+      border: 1px solid var(--border); background: #0b1222; color: var(--text); padding: 8px 12px;
+      border-radius: 12px; cursor: pointer; transition: transform .05s ease, background .2s ease;
+    }
+    .btn:hover { background: #101830; }
+    .btn:active { transform: translateY(1px); }
+    .btn.secondary { background: #0b1120; }
+    .btn.white { background: #e5e7eb; color: #0b1020; border-color: transparent; }
+    .tag { padding: 2px 8px; border: 1px dashed var(--border); border-radius: 999px; color: var(--muted); font-size: 12px; }
+
+    main { max-width: 1100px; margin: 16px auto; padding: 0 16px 32px; }
+
+    .stage-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 14px; margin-bottom: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    }
+    .stage-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+    .stage-head h2 { margin: 0; font-size: 16px; font-weight: 600; }
+
+    .playground-wrap { display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+    .playground {
+      position: relative; min-height: 280px; padding: 12px; border-radius: 14px;
+      background: linear-gradient(180deg, #0b1222, #0b1222);
+      border: 1px dashed #20314d;
     }
 
-    /* Προαιρετικά: πιο ωραίο look σε μεγαλύτερες οθόνες */
-    @media (min-width: 768px) {
-      .col {
-        min-width: 0;    /* δεν χρειάζεται min-width εδώ */
-      }
+    /* The actual flex container we will manipulate */
+    #flexContainer {
+      display: flex; min-height: 180px; border: 1px solid var(--border);
+      background: #0c1428; border-radius: 12px; padding: 10px;
+      transition: width .2s ease;
+      overflow: hidden; /* toggled via JS when nowrap demo */
     }
+
+    .item {
+      background: #19233c; border: 1px solid #25324f; color: #e2e8f0; border-radius: 12px;
+      padding: 12px; display: flex; align-items: center; justify-content: center;
+      min-width: 40px; min-height: 40px; user-select: none; cursor: pointer;
+      position: relative; transition: transform .08s ease; font-weight: 600;
+    }
+    .item small { font-weight: 400; color: #a1a7b3; display: block; margin-top: 4px; font-size: 11px; }
+    .item.selected { outline: 2px solid var(--accent); box-shadow: 0 0 0 6px rgba(79,70,229,.15) inset; }
+    .item:hover { transform: translateY(-1px); }
+
+    .hint { font-size: 13px; color: var(--muted); }
+
+    .subgrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    @media (max-width: 980px) { .subgrid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .subgrid { grid-template-columns: repeat(2, 1fr); } }
+
+    /* Axis overlay */
+    .overlay { position: absolute; inset: 0; pointer-events: none; }
+    .arrow { position: absolute; display: flex; align-items: center; gap: 6px; font-size: 12px; color: #c7d2fe; }
+    .arrow::after { content: ""; display: block; height: 2px; background: #4f46e5; }
+    .arrow.main { top: 8px; left: 12px; right: 12px; }
+    .arrow.main::after { flex: 1; }
+    .arrow.cross { top: 36px; bottom: 12px; left: 8px; writing-mode: vertical-rl; transform: rotate(180deg); }
+    .arrow.cross::after { width: 2px; height: auto; flex: 1; margin-left: 6px; }
+
+    /* Responsive demo with media queries */
+    .responsive .item { flex: 1 1 140px; }
+    @media (min-width: 480px) { .responsive .item { flex-basis: 180px; } }
+    @media (min-width: 768px) { .responsive .item { flex-basis: 240px; } }
+
+    .footer-note { color: var(--muted); font-size: 12px; text-align: center; margin-top: 14px; }
   </style>
 </head>
 <body>
-  <div class="row">
-    <div class="col">Στήλη 1</div>
-    <div class="col">Στήλη 2</div>
-    <div class="col">Στήλη 3</div>
-  </div>
+  <header>
+    <div class="wrap">
+      <div class="row" style="justify-content: space-between;">
+        <div class="row" style="gap:10px;">
+          <span class="tag">Flexbox Live Playground</span>
+          <span class="hint">Παίξε με τις ρυθμίσεις και δες άμεσα το αποτέλεσμα.</span>
+        </div>
+        <div class="row">
+          <button class="btn" id="presetNavbar">Preset: Navbar</button>
+          <button class="btn" id="presetCards">Preset: Card grid</button>
+          <button class="btn" id="presetSidebar">Preset: Sidebar</button>
+          <button class="btn" id="presetCenter">Preset: Center</button>
+        </div>
+      </div>
+      <div class="controls" style="margin-top:12px;">
+        <div class="control">
+          <label for="direction">flex-direction</label>
+          <select id="direction">
+            <option>row</option>
+            <option>row-reverse</option>
+            <option>column</option>
+            <option>column-reverse</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="wrap">flex-wrap</label>
+          <select id="wrap">
+            <option value="nowrap">nowrap</option>
+            <option value="wrap">wrap</option>
+            <option value="wrap-reverse">wrap-reverse</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="justify">justify-content (main)</label>
+          <select id="justify">
+            <option>flex-start</option>
+            <option>center</option>
+            <option>flex-end</option>
+            <option>space-between</option>
+            <option>space-around</option>
+            <option>space-evenly</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="align">align-items (cross)</label>
+          <select id="align">
+            <option>stretch</option>
+            <option>flex-start</option>
+            <option>center</option>
+            <option>baseline</option>
+            <option>flex-end</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="alignContent">align-content (wrap)</label>
+          <select id="alignContent">
+            <option>stretch</option>
+            <option>flex-start</option>
+            <option>center</option>
+            <option>flex-end</option>
+            <option>space-between</option>
+            <option>space-around</option>
+            <option>space-evenly</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="gap">gap</label>
+          <input id="gap" type="number" min="0" max="64" step="1" value="10" />
+        </div>
+        <div class="control">
+          <label for="rowGap">row-gap</label>
+          <input id="rowGap" type="number" min="0" max="64" step="1" value="10" />
+        </div>
+        <div class="control">
+          <label for="colGap">column-gap</label>
+          <input id="colGap" type="number" min="0" max="64" step="1" value="10" />
+        </div>
+        <div class="control">
+          <label for="width">container width (vw)</label>
+          <input id="width" type="range" min="40" max="100" step="1" value="100" />
+        </div>
+        <div class="control">
+          <label for="items"># items</label>
+          <input id="items" type="number" min="1" max="24" value="8" />
+        </div>
+        <div class="control">
+          <label for="basis">flex-basis (px)</label>
+          <input id="basis" type="number" min="0" max="480" step="10" value="120" />
+        </div>
+        <div class="control">
+          <label for="grow">flex-grow</label>
+          <input id="grow" type="number" min="0" max="5" step="1" value="1" />
+        </div>
+        <div class="control">
+          <label for="shrink">flex-shrink</label>
+          <input id="shrink" type="number" min="0" max="10" step="1" value="1" />
+        </div>
+        <div class="control">
+          <label for="responsiveToggle">Responsive (media queries)</label>
+          <select id="responsiveToggle">
+            <option value="off">off</option>
+            <option value="on">on</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="overflowToggle">Overflow demo (nowrap)</label>
+          <select id="overflowToggle">
+            <option value="hidden">hidden</option>
+            <option value="auto">auto</option>
+            <option value="scroll">scroll</option>
+            <option value="visible">visible</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="axisOverlay">Άξονες overlay</label>
+          <select id="axisOverlay">
+            <option value="on">on</option>
+            <option value="off">off</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="randomHeights">Τυχαία ύψη (baseline/align)</label>
+          <select id="randomHeights">
+            <option value="off">off</option>
+            <option value="on">on</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="stage-card">
+      <div class="stage-head">
+        <h2>Flex Container</h2>
+        <div class="row">
+          <span class="hint">Πάτησε ένα item για επιλογή (align-self/order).</span>
+          <button class="btn secondary" id="resetAll">Reset</button>
+        </div>
+      </div>
+
+      <div class="playground-wrap">
+        <div class="playground">
+          <div id="flexContainer" class="responsive" style="width:100%; gap:10px; column-gap:10px; row-gap:10px;">
+            <!-- items injected by JS -->
+          </div>
+          <div class="overlay" id="axisOverlayEl">
+            <div class="arrow main">Main axis</div>
+            <div class="arrow cross">Cross axis</div>
+          </div>
+        </div>
+
+        <div class="stage-card" style="margin:0;">
+          <div class="stage-head"><h2>Επιλεγμένο item (targeted overrides)</h2></div>
+          <div class="subgrid">
+            <div class="control"><label for="order">order</label><input id="order" type="number" value="0" step="1" min="-10" max="10"></div>
+            <div class="control"><label for="self">align-self</label>
+              <select id="self">
+                <option value="unset">unset</option>
+                <option>auto</option>
+                <option>stretch</option>
+                <option>flex-start</option>
+                <option>center</option>
+                <option>baseline</option>
+                <option>flex-end</option>
+              </select>
+            </div>
+            <div class="control"><label for="itemGrow">flex-grow</label><input id="itemGrow" type="number" min="0" max="6" value="1"></div>
+            <div class="control"><label for="itemShrink">flex-shrink</label><input id="itemShrink" type="number" min="0" max="10" value="1"></div>
+            <div class="control"><label for="itemBasis">flex-basis (px)</label><input id="itemBasis" type="number" min="0" max="480" step="10" value="120"></div>
+            <div class="row" style="align-items:end;">
+              <button id="resetItem" class="btn">Reset item</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="hint" style="margin-top:10px;">Σημείωση: <code>justify-content</code> επηρεάζει τον <em>main</em> άξονα, <code>align-items</code> τον <em>cross</em>. Το <code>align-content</code> δουλεύει μόνο όταν <code>flex-wrap</code> ≠ <code>nowrap</code> και υπάρχουν ≥2 γραμμές/στήλες.</p>
+    </div>
+
+    <div class="stage-card">
+      <div class="stage-head">
+        <h2>Tips για demo</h2>
+      </div>
+      <ul style="line-height:1.7; margin:0; padding-left:18px;">
+        <li>Σύρε το slider «container width (vw)» για να προσομοιώσεις διαφορετικά πλάτη οθόνης.
+          Ζήτησε από φοιτητές σε κινητό να περιστρέψουν τη συσκευή.</li>
+        <li>Άνοιξε/κλείσε το «Responsive (media queries)» για να δείξεις πώς αλλάζει το <code>flex-basis</code> ανά breakpoint.</li>
+        <li>Ενεργοποίησε «Τυχαία ύψη» για να κατανοήσουν <code>align-items</code> vs <code>baseline</code>.</li>
+        <li>Κάνε κλικ σε ένα item και άλλαξε <code>align-self</code> ή <code>order</code> για εξαίρεση ανά στοιχείο.</li>
+      </ul>
+      <p class="footer-note">φτιαγμένο για live μάθημα: μία σελίδα, χωρίς βιβλιοθήκες.</p>
+    </div>
+  </main>
+
+  <script>
+    // --- State ---
+    const S = {
+      items: 8,
+      direction: 'row',
+      wrap: 'nowrap',
+      justify: 'flex-start',
+      align: 'stretch',
+      alignContent: 'stretch',
+      gap: 10, rowGap: 10, colGap: 10,
+      width: 100,
+      basis: 120, grow: 1, shrink: 1,
+      responsive: true,
+      overflow: 'hidden',
+      randomHeights: false,
+      selectedId: null,
+      perItem: new Map(), // id -> {order,self,grow,shrink,basis}
+    };
+
+    // --- Elements ---
+    const el = (id) => document.getElementById(id);
+    const c = el('flexContainer');
+
+    // --- Helpers ---
+    function createItem(i){
+      const d = document.createElement('div');
+      d.className = 'item';
+      d.dataset.id = i;
+      d.style.flex = `${S.grow} ${S.shrink} ${S.basis}px`;
+      d.innerHTML = `<div>${i}<small>flex: ${S.grow} ${S.shrink} ${S.basis}px</small></div>`;
+      if (S.randomHeights) d.style.minHeight = (40 + Math.round(Math.random()*120)) + 'px';
+      d.addEventListener('click', () => selectItem(i, d));
+      return d;
+    }
+
+    function rebuildItems(){
+      c.innerHTML = '';
+      for (let i=1;i<=S.items;i++) c.appendChild(createItem(i));
+      // re-apply per-item overrides
+      S.perItem.forEach((ovr, id) => applyItemOverrides(id));
+      refreshSelectedUI();
+    }
+
+    function applyContainer(){
+      c.style.flexDirection = S.direction;
+      c.style.flexWrap = S.wrap;
+      c.style.justifyContent = S.justify;
+      c.style.alignItems = S.align;
+      c.style.alignContent = S.alignContent;
+      c.style.gap = `${S.gap}px`;
+      c.style.rowGap = `${S.rowGap}px`;
+      c.style.columnGap = `${S.colGap}px`;
+      c.style.width = `${S.width}vw`;
+      c.style.overflow = (S.wrap === 'nowrap') ? S.overflow : 'visible';
+
+      // axis overlay visibility & labels based on direction
+      const overlay = el('axisOverlayEl');
+      overlay.style.display = (el('axisOverlay').value === 'on') ? 'block' : 'none';
+      overlay.querySelector('.main').textContent = 'Main axis ('+S.direction+')';
+      overlay.querySelector('.cross').textContent = 'Cross axis';
+
+      // responsive class
+      c.classList.toggle('responsive', S.responsive);
+
+      // Update default flex on items (unless per-item override exists)
+      [...c.children].forEach(ch => {
+        const id = Number(ch.dataset.id);
+        if (!S.perItem.has(id)) {
+          ch.style.flex = `${S.grow} ${S.shrink} ${S.basis}px`;
+          ch.querySelector('small').textContent = `flex: ${S.grow} ${S.shrink} ${S.basis}px`;
+        }
+      });
+    }
+
+    function selectItem(id, node){
+      S.selectedId = id;
+      [...c.children].forEach(ch => ch.classList.toggle('selected', Number(ch.dataset.id)===id));
+      refreshSelectedUI();
+    }
+
+    function refreshSelectedUI(){
+      const id = S.selectedId;
+      const has = !!id;
+      const defaults = {order:0,self:'unset',grow:S.grow,shrink:S.shrink,basis:S.basis};
+      const o = has ? (S.perItem.get(id) || defaults) : defaults;
+      el('order').value = o.order;
+      el('self').value = o.self;
+      el('itemGrow').value = o.grow;
+      el('itemShrink').value = o.shrink;
+      el('itemBasis').value = o.basis;
+    }
+
+    function applyItemOverrides(id){
+      const node = [...c.children].find(x => Number(x.dataset.id)===id);
+      if (!node) return;
+      const o = S.perItem.get(id);
+      if (!o) return;
+      node.style.order = o.order;
+      node.style.alignSelf = (o.self==='unset')? '' : o.self;
+      node.style.flex = `${o.grow} ${o.shrink} ${o.basis}px`;
+      node.querySelector('small').textContent = `flex: ${o.grow} ${o.shrink} ${o.basis}px`;
+    }
+
+    // --- Wire controls ---
+    function bind(){
+      el('direction').addEventListener('change', e=>{ S.direction=e.target.value; applyContainer(); });
+      el('wrap').addEventListener('change', e=>{ S.wrap=e.target.value; applyContainer(); });
+      el('justify').addEventListener('change', e=>{ S.justify=e.target.value; applyContainer(); });
+      el('align').addEventListener('change', e=>{ S.align=e.target.value; applyContainer(); });
+      el('alignContent').addEventListener('change', e=>{ S.alignContent=e.target.value; applyContainer(); });
+
+      el('gap').addEventListener('input', e=>{ S.gap=+e.target.value; applyContainer(); });
+      el('rowGap').addEventListener('input', e=>{ S.rowGap=+e.target.value; applyContainer(); });
+      el('colGap').addEventListener('input', e=>{ S.colGap=+e.target.value; applyContainer(); });
+      el('width').addEventListener('input', e=>{ S.width=+e.target.value; applyContainer(); });
+      el('items').addEventListener('change', e=>{ S.items=Math.max(1,Math.min(24, +e.target.value||8)); rebuildItems(); applyContainer(); });
+
+      el('basis').addEventListener('input', e=>{ S.basis=+e.target.value; applyContainer(); });
+      el('grow').addEventListener('input', e=>{ S.grow=+e.target.value; applyContainer(); });
+      el('shrink').addEventListener('input', e=>{ S.shrink=+e.target.value; applyContainer(); });
+
+      el('responsiveToggle').addEventListener('change', e=>{ S.responsive = e.target.value==='on'; applyContainer(); });
+      el('overflowToggle').addEventListener('change', e=>{ S.overflow = e.target.value; applyContainer(); });
+      el('axisOverlay').addEventListener('change', ()=> applyContainer());
+      el('randomHeights').addEventListener('change', e=>{ S.randomHeights = e.target.value==='on'; rebuildItems(); applyContainer(); });
+
+      // selected item controls
+      el('order').addEventListener('input', e=>{
+        if (!S.selectedId) return; const id=S.selectedId;
+        const o=S.perItem.get(id)||{order:0,self:'unset',grow:S.grow,shrink:S.shrink,basis:S.basis};
+        o.order=+e.target.value; S.perItem.set(id,o); applyItemOverrides(id);
+      });
+      el('self').addEventListener('change', e=>{
+        if (!S.selectedId) return; const id=S.selectedId;
+        const o=S.perItem.get(id)||{order:0,self:'unset',grow:S.grow,shrink:S.shrink,basis:S.basis};
+        o.self=e.target.value; S.perItem.set(id,o); applyItemOverrides(id);
+      });
+      el('itemGrow').addEventListener('input', e=>{
+        if (!S.selectedId) return; const id=S.selectedId;
+        const o=S.perItem.get(id)||{order:0,self:'unset',grow:S.grow,shrink:S.shrink,basis:S.basis};
+        o.grow=+e.target.value; S.perItem.set(id,o); applyItemOverrides(id);
+      });
+      el('itemShrink').addEventListener('input', e=>{
+        if (!S.selectedId) return; const id=S.selectedId;
+        const o=S.perItem.get(id)||{order:0,self:'unset',grow:S.grow,shrink:S.shrink,basis:S.basis};
+        o.shrink=+e.target.value; S.perItem.set(id,o); applyItemOverrides(id);
+      });
+      el('itemBasis').addEventListener('input', e=>{
+        if (!S.selectedId) return; const id=S.selectedId;
+        const o=S.perItem.get(id)||{order:0,self:'unset',grow:S.grow,shrink:S.shrink,basis:S.basis};
+        o.basis=+e.target.value; S.perItem.set(id,o); applyItemOverrides(id);
+      });
+
+      el('resetItem').addEventListener('click', ()=>{
+        if (!S.selectedId) return; const id=S.selectedId; S.perItem.delete(id); applyContainer(); applyItemOverrides(id); refreshSelectedUI();
+      });
+
+      el('resetAll').addEventListener('click', ()=>{ Object.assign(S, {
+        items: 8, direction: 'row', wrap: 'nowrap', justify: 'flex-start', align: 'stretch', alignContent: 'stretch',
+        gap: 10, rowGap: 10, colGap: 10, width: 100, basis: 120, grow: 1, shrink: 1, responsive: true, overflow: 'hidden', randomHeights: false,
+        selectedId: null, perItem: new Map()
+      });
+        // reset UI controls
+        el('direction').value='row'; el('wrap').value='nowrap'; el('justify').value='flex-start'; el('align').value='stretch'; el('alignContent').value='stretch';
+        el('gap').value=10; el('rowGap').value=10; el('colGap').value=10; el('width').value=100; el('items').value=8;
+        el('basis').value=120; el('grow').value=1; el('shrink').value=1; el('responsiveToggle').value='on'; el('overflowToggle').value='hidden';
+        el('axisOverlay').value='on'; el('randomHeights').value='off';
+        rebuildItems(); applyContainer(); [...c.children].forEach(ch => ch.classList.remove('selected'));
+      });
+
+      // Presets
+      el('presetNavbar').addEventListener('click', ()=>{
+        S.direction='row'; S.wrap='nowrap'; S.justify='space-between'; S.align='center'; S.alignContent='stretch'; S.items=3; S.gap=10; S.width=100;
+        S.basis=80; S.grow=0; S.shrink=1; S.responsive=false; S.randomHeights=false; S.perItem.clear(); S.selectedId=null;
+        el('direction').value='row'; el('wrap').value='nowrap'; el('justify').value='space-between'; el('align').value='center'; el('alignContent').value='stretch';
+        el('items').value=3; el('gap').value=10; el('rowGap').value=10; el('colGap').value=10; el('width').value=100; el('basis').value=80; el('grow').value=0; el('shrink').value=1; el('responsiveToggle').value='off'; el('randomHeights').value='off';
+        rebuildItems();
+        // label items
+        const labels=['Logo','Menu','CTA'];
+        [...c.children].forEach((ch,i)=>{ ch.firstChild.firstChild.textContent = labels[i]||('Item '+(i+1)); });
+        applyContainer();
+      });
+
+      el('presetCards').addEventListener('click', ()=>{
+        S.direction='row'; S.wrap='wrap'; S.justify='flex-start'; S.align='stretch'; S.alignContent='flex-start'; S.items=8; S.gap=16; S.rowGap=16; S.colGap=16; S.width=100; S.basis=240; S.grow=1; S.shrink=1; S.responsive=true; S.randomHeights=true; S.perItem.clear(); S.selectedId=null;
+        el('direction').value='row'; el('wrap').value='wrap'; el('justify').value='flex-start'; el('align').value='stretch'; el('alignContent').value='flex-start';
+        el('items').value=8; el('gap').value=16; el('rowGap').value=16; el('colGap').value=16; el('width').value=100; el('basis').value=240; el('grow').value=1; el('shrink').value=1; el('responsiveToggle').value='on'; el('randomHeights').value='on';
+        rebuildItems(); applyContainer();
+      });
+
+      el('presetSidebar').addEventListener('click', ()=>{
+        S.direction='row'; S.wrap='nowrap'; S.justify='flex-start'; S.align='stretch'; S.items=2; S.gap=16; S.width=100; S.basis=0; S.grow=1; S.shrink=1; S.responsive=false; S.randomHeights=false; S.perItem.clear(); S.selectedId=null;
+        el('direction').value='row'; el('wrap').value='nowrap'; el('justify').value='flex-start'; el('align').value='stretch'; el('items').value=2; el('gap').value=16; el('width').value=100; el('basis').value=0; el('grow').value=1; el('shrink').value=1; el('responsiveToggle').value='off'; el('randomHeights').value='off';
+        rebuildItems();
+        // left aside smaller, right main larger via per-item flex ratios
+        const o1={order:0,self:'unset',grow:1,shrink:1,basis:0}; const o2={order:0,self:'unset',grow:3,shrink:1,basis:0};
+        S.perItem.set(1,o1); S.perItem.set(2,o2); applyItemOverrides(1); applyItemOverrides(2);
+        // label
+        c.children[0].firstChild.firstChild.textContent='Aside';
+        c.children[1].firstChild.firstChild.textContent='Main content';
+        applyContainer();
+      });
+
+      el('presetCenter').addEventListener('click', ()=>{
+        S.direction='row'; S.wrap='nowrap'; S.justify='center'; S.align='center'; S.items=1; S.gap=10; S.width=100; S.basis=160; S.grow=0; S.shrink=0; S.responsive=false; S.randomHeights=false; S.perItem.clear(); S.selectedId=null;
+        el('direction').value='row'; el('wrap').value='nowrap'; el('justify').value='center'; el('align').value='center'; el('items').value=1; el('gap').value=10; el('width').value=100; el('basis').value=160; el('grow').value=0; el('shrink').value=0; el('responsiveToggle').value='off'; el('randomHeights').value='off';
+        rebuildItems(); applyContainer();
+        c.children[0].firstChild.firstChild.textContent='Centered box';
+      });
+    }
+
+    // --- Init ---
+    function init(){
+      bind(); rebuildItems(); applyContainer();
+    }
+    init();
+  </script>
 </body>
 </html>
