@@ -68,7 +68,7 @@
     /* The actual flex container we will manipulate */
     #flexContainer {
       display: flex; min-height: 180px; border: 1px solid var(--border);
-      background: #0c1428; border-radius: 12px; padding: 10px;
+      background: #0c1428; border-radius: 12px; padding: 6px;
       transition: width .2s ease;
       overflow: hidden; /* toggled via JS when nowrap demo */
     }
@@ -354,6 +354,7 @@
       c.style.gap = `${S.gap}px`;
       c.style.rowGap = `${S.rowGap}px`;
       c.style.columnGap = `${S.colGap}px`;
+      c.style.maxWidth = '100%';
       c.style.width = `${S.width}vw`;
       c.style.overflow = (S.wrap === 'nowrap') ? S.overflow : 'visible';
 
@@ -521,3 +522,4 @@
   </script>
 </body>
 </html>
+
