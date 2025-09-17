@@ -357,7 +357,7 @@
       c.style.gap = `${S.gap}px`;
       c.style.rowGap = `${S.rowGap}px`;
       c.style.columnGap = `${S.colGap}px`;
-      c.style.width = `${S.width}vw`;
+      c.style.width = `min(100%, ${S.width}vw)`;  // δεν ξεπερνά το panel
       c.style.overflow = (S.wrap === 'nowrap') ? S.overflow : 'visible';
 
       // axis overlay visibility & labels based on direction
@@ -524,6 +524,7 @@
   </script>
 </body>
 </html>
+
 
 
 
