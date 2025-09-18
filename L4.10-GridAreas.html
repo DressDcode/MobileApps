@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Grid Layout Παράδειγμα</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 200px 1fr; /* 2 στήλες */
+      grid-template-rows: 60px 1fr 40px; /* 3 γραμμές */
+      grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
+      height: 100vh;
+    }
+
+    .header {
+      grid-area: header;
+      background: #4CAF50;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+    }
+
+    .sidebar {
+      grid-area: sidebar;
+      background: #f4f4f4;
+      padding: 1em;
+    }
+
+    .main {
+      grid-area: main;
+      background: #fff;
+      padding: 1em;
+    }
+
+    .footer {
+      grid-area: footer;
+      background: #333;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">Header</div>
+    <div class="sidebar">Sidebar</div>
+    <div class="main">Main Content</div>
+    <div class="footer">Footer</div>
+  </div>
+</body>
+</html>
