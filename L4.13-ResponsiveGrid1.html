@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Overflow σε στενούς containers · auto-fit vs auto-fill</title>
+<style>
+  :root {
+    --bg:#0f172a; --panel:#0b1220; --ink:#e5e7eb; --muted:#9ca3af; --accent:#38bdf8;
+    --gap:14px; --radius:14px; --shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  * { box-sizing:border-box }
+  html, body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Arial }
+  h1, h2, h3 { margin:0 0 8px }
+  .wrap { max-width:1100px; margin:22px auto; padding:0 14px }
+  .card {
+    background: linear-gradient(180deg, #111827, var(--panel));
+    border:1px solid rgba(148,163,184,.15);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:16px;
+  }
+  .grid-demo {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
+    margin-top: 12px;
+  }
+  @media (max-width: 900px) {
+    .grid-demo { grid-template-columns: 1fr }
+  }
+  .box {
+    --w: 640px;            /* Θα τροποποιείται από το slider */
+    width: var(--w);
+    overflow:auto;         /* Δείξε οριζόντιο scrollbar όταν γίνεται overflow */
+    border-radius: var(--radius);
+    border:1px dashed rgba(148,163,184,.35);
+    background: rgba(148,163,184,.04);
+    padding:12px;
+  }
+  .box-hint { color: var(--muted); font-size:.95rem; margin:6px 0 12px }
+  .controls {
+    display:flex; align-items:center; gap:10px; margin: 8px 0 12px;
+  }
+  input[type="range"] { width: 260px }
+  .pill {
+    display:inline-block; padding:4px 10px; border-radius:999px;
+    border:1px solid rgba(148,163,184,.35); color:var(--ink); font-size:.85rem;
+  }
+
+  /* Οι γκαλερί */
+  .gallery { display:grid; gap:12px }
+  .gallery.fit-basic {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .gallery.fill-basic {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .gallery.fit-safe {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  }
+  .gallery.fill-safe {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  }
+
+  /* «Κάρτες» */
+  .item {
+    background: #0f172a;
+    border:1px solid rgba(148,163,184,.15);
+    border-radius:12px;
+    padding:12px;
+    min-height:80px;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:600;
+  }
+
+  /* Header legend */
+  .legend { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px }
+  .legend b { color:#a5f3fc }
+  .muted { color: var(--muted) }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Overflow σε πολύ στενούς containers</h1>
+    <p class="muted">
+      Με <code>minmax(220px, 1fr)</code> κάθε κάρτα έχει ελάχιστο πλάτος 220px.
+      Αν το container γίνει στενότερο από αυτό, δεν μπορεί να «σπάσει» άλλο και εμφανίζεται
+      οριζόντιο scroll (overflow). Η λύση: <code>minmax(<b>min(100%, 220px)</b>, 1fr)</code> —
+      το ελάχιστο δεν ξεπερνά ποτέ το 100% του container, οπότε «μαζεύεται» σε 1 στήλη χωρίς overflow.
+    </p>
+
+    <div class="legend">
+      <span class="pill">χωρίς trick: <code>minmax(220px, 1fr)</code></span>
+      <span class="pill">με trick: <code>minmax(min(100%, 220px), 1fr)</code></span>
+      <span class="pill">auto-fit</span>
+      <span class="pill">auto-fill</span>
+    </div>
+
+    <!-- DEMO 1: Χωρίς το trick (πιθανό overflow) -->
+    <h2 style="margin-top:16px">1) Χωρίς το <code>min(100%, 220px)</code> (βλέπεις overflow σε πολύ μικρά πλάτη)</h2>
+    <div class="grid-demo">
+      <div class="card">
+        <h3>auto-fit · <span class="muted">repeat(auto-fit, minmax(220px, 1fr))</span></h3>
+        <div class="controls">
+          <label>Πλάτος: <span class="w">640px</span></label>
+          <input type="range" min="140" max="900" value="640" step="10">
+          <span class="pill">Container</span>
+        </div>
+        <div class="box">
+          <div class="gallery fit-basic">
+            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div>
+            <div class="item">5</div><div class="item">6</div><div class="item">7</div><div class="item">8</div>
+          </div>
+        </div>
+        <div class="box-hint">Σύρε το slider κάτω από ~220–240px: θα εμφανιστεί οριζόντιο scrollbar.</div>
+      </div>
+
+      <div class="card">
+        <h3>auto-fill · <span class="muted">repeat(auto-fill, minmax(220px, 1fr))</span></h3>
+        <div class="controls">
+          <label>Πλάτος: <span class="w">640px</span></label>
+          <input type="range" min="140" max="900" value="640" step="10">
+          <span class="pill">Container</span>
+        </div>
+        <div class="box">
+          <div class="gallery fill-basic">
+            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div>
+            <div class="item">5</div><div class="item">6</div><div class="item">7</div><div class="item">8</div>
+          </div>
+        </div>
+        <div class="box-hint">Παρόμοια συμπεριφορά, αλλά κρατά «κενές» θέσεις όταν περισσεύει χώρος.</div>
+      </div>
+    </div>
+
+    <!-- DEMO 2: Με το trick (χωρίς overflow) -->
+    <h2 style="margin-top:22px">2) Με το <code>min(100%, 220px)</code> (δεν υπάρχει overflow — πέφτει σε 1 στήλη)</h2>
+    <div class="grid-demo">
+      <div class="card">
+        <h3>auto-fit · <span class="muted">repeat(auto-fit, minmax(min(100%, 220px), 1fr))</span></h3>
+        <div class="controls">
+          <label>Πλάτος: <span class="w">640px</span></label>
+          <input type="range" min="140" max="900" value="640" step="10">
+          <span class="pill">Container</span>
+        </div>
+        <div class="box">
+          <div class="gallery fit-safe">
+            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div>
+            <div class="item">5</div><div class="item">6</div><div class="item">7</div><div class="item">8</div>
+          </div>
+        </div>
+        <div class="box-hint">Όσο μικραίνει το container, η γκαλερί γίνεται 1 στήλη χωρίς οριζόντιο scroll.</div>
+      </div>
+
+      <div class="card">
+        <h3>auto-fill · <span class="muted">repeat(auto-fill, minmax(min(100%, 220px), 1fr))</span></h3>
+        <div class="controls">
+          <label>Πλάτος: <span class="w">640px</span></label>
+          <input type="range" min="140" max="900" value="640" step="10">
+          <span class="pill">Container</span>
+        </div>
+        <div class="box">
+          <div class="gallery fill-safe">
+            <div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div>
+            <div class="item">5</div><div class="item">6</div><div class="item">7</div><div class="item">8</div>
+          </div>
+        </div>
+        <div class="box-hint">Δεν θα εμφανιστεί overflow. Δες τη διαφορά auto-fit vs auto-fill όταν μεγαλώνει το πλάτος.</div>
+      </div>
+    </div>
+
+    <p class="muted" style="margin-top:18px">
+      💡 <b>Συμπέρασμα:</b> Το overflow εδώ προκύπτει επειδή το ελάχιστο πλάτος στήλης (220px) είναι μεγαλύτερο από το διαθέσιμο πλάτος
+      του container. Με το <code>min(100%, 220px)</code> εγγυάσαι ότι το «ελάχιστο» δεν θα ξεπεράσει ποτέ το container.
+    </p>
+  </div>
+
+<script>
+document.querySelectorAll('.card').forEach(card => {
+  const slider = card.querySelector('input[type="range"]');
+  const box = card.querySelector('.box');
+  const wLabel = card.querySelector('.w');
+  if (!slider || !box) return;
+  function setW(val) {
+    box.style.setProperty('--w', val + 'px');
+    if (wLabel) wLabel.textContent = val + 'px';
+  }
+  setW(slider.value);
+  slider.addEventListener('input', e => setW(e.target.value));
+});
+</script>
+</body>
+</html>
