@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Container Queries Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+
+    /* Τα containers */
+    .container {
+      border: 2px solid #333;
+      padding: 10px;
+      background: white;
+      container-type: inline-size; /* ενεργοποιεί container queries */
+      flex: 1;
+    }
+
+    .narrow { max-width: 250px; }
+    .wide   { max-width: 500px; }
+
+    /* Το component (card) */
+    .card {
+      padding: 20px;
+      background: lightblue;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    /* Container query */
+    @container (max-width: 300px) {
+      .card {
+        background: lightcoral;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container narrow">
+    <div class="card">Κάρτα σε στενό container</div>
+  </div>
+
+  <div class="container wide">
+    <div class="card">Κάρτα σε πλατύ container</div>
+  </div>
+</body>
+</html>
