@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CSS Subgrid – Πιο έντονη ευθυγράμμιση πολλών στοιχείων</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#0b1220; --ink:#e5e7eb; --muted:#9ca3af; --gap:16px;
+    --accent:#38bdf8; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  h1,h2{margin:0 0 6px}
+  .wrap{max-width:1200px;margin:18px auto;padding:0 14px}
+  .legend{color:var(--muted);margin-bottom:10px}
+  .pill{display:inline-block;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(148,163,184,.35);margin:2px 6px 2px 0;font-size:.9rem}
+
+  /* Parent: 12 cols with named line [c] */
+  .page-grid{
+    display:grid;
+    grid-template-columns: repeat(12, [c] minmax(0, 1fr));
+    gap: var(--gap);
+    background-image:
+      linear-gradient(to right, rgba(56,189,248,.08), rgba(56,189,248,.08)),
+      repeating-linear-gradient(to right,
+        transparent 0, transparent calc(1*(100% / 12) - 1px),
+        rgba(56,189,248,.10) calc(1*(100% / 12) - 1px), rgba(56,189,248,.10) calc(1*(100% / 12) + 1px));
+    background-size: 100% 100%, 100% 100%;
+    border: 1px dashed rgba(148,163,184,.35);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .card{
+    background: linear-gradient(180deg, #111827, var(--panel));
+    border:1px solid rgba(148,163,184,.25);
+    border-radius: var(--radius);
+    padding:12px;
+  }
+
+  /* Χωρίς subgrid: δεν ευθυγραμμίζονται ακριβώς με τις 12 cols */
+  .card-nested{
+    display:grid;
+    grid-template-columns: 220px 1fr;
+    grid-auto-rows: auto;
+    gap: 10px;
+    align-items: start;
+  }
+  .card-nested .media{ grid-column: 1 / -1; }
+  .card-nested .aside{ grid-column: 1 / 2; }
+  .card-nested .title{ grid-column: 2 / -1; }
+  .card-nested .meta { grid-column: 1 / 2; }
+  .card-nested .body { grid-column: 2 / -1; }
+  .card-nested .actions{ grid-column: 2 / -1; }
+
+  /* Με subgrid: όλες οι εσωτερικές στήλες ακολουθούν τις parent [c] γραμμές */
+  .card-subgrid{
+    display:grid;
+    grid-template-columns: subgrid;
+    gap: 10px;
+    align-items: start;
+  }
+  .card-subgrid .media  { grid-column: c 1 / c 13; }  /* full width στο span */
+  .card-subgrid .aside  { grid-column: c 1 / c 3; }   /* 2 parent στήλες */
+  .card-subgrid .title  { grid-column: c 3 / c 10; }  /* τίτλος ξεκινά ακριβώς στη c3 */
+  .card-subgrid .meta   { grid-column: c 3 / c 6; }   /* meta στοιχείο */
+  .card-subgrid .body   { grid-column: c 6 / -1; }    /* σώμα κειμένου */
+  .card-subgrid .actions{
+  grid-column: c -3 / c -1;   /* τελευταίες 2 στήλες του subgrid */
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;            /* ή nowrap αν θες σε 1 σειρά πάντα */
+  justify-content: flex-end;  /* στοίχιση των κουμπιών δεξιά μέσα στο area */
+  align-items: center;
+}
+
+  /* Εμφάνιση blocks */
+  .blk{background:#0f172a;border:1px solid rgba(148,163,184,.25);border-radius:10px;padding:8px}
+  .media{min-height:80px;background:linear-gradient(135deg, #113, #224);border:1px solid rgba(148,163,184,.25);border-radius:10px}
+  .title{font-weight:700}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{padding:8px 12px;border-radius:10px;border:1px solid rgba(148,163,184,.35);text-decoration:none;color:var(--ink)}
+
+  /* Spans πάνω στο parent grid */
+  .span-6 { grid-column: c 1 / c 7; }
+  .span-8 { grid-column: c 1 / c 9; }
+  .span-12{ grid-column: c 1 / c 13; }
+
+  @media (max-width: 900px){
+    .span-12, .span-8, .span-6 { grid-column: c 1 / c 13; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Subgrid – Ευθυγράμμιση πολλών εσωτερικών στοιχείων</h1>
+    <p class="legend">
+      Παρατήρησε πως <b>media / aside / τίτλος / meta / body / actions</b> «κουμπώνουν» στις <b>ίδιες</b> parent στήλες
+      σε κάρτες διαφορετικού πλάτους όταν χρησιμοποιούμε <code>grid-template-columns: subgrid</code>.
+    </p>
+
+    <h2>1) Χωρίς subgrid</h2>
+    <div class="page-grid" style="margin-bottom:14px">
+      <article class="card card-nested span-6">
+        <div class="media"></div>
+        <div class="aside blk">ASIDE</div>
+        <div class="title blk">Τίτλος</div>
+        <div class="meta blk">Meta</div>
+        <div class="body blk">Κείμενο σώματος…</div>
+        <div class="actions">
+          <a class="btn" href="#">Περισσότερα</a>
+          <a class="btn" href="#">Κοινοποίηση</a>
+        </div>
+      </article>
+
+      <article class="card card-nested span-8">
+        <div class="media"></div>
+        <div class="aside blk">ASIDE</div>
+        <div class="title blk">Τίτλος άλλης κάρτας</div>
+        <div class="meta blk">Meta</div>
+        <div class="body blk">Κείμενο σώματος με περισσότερες γραμμές για να φανεί η διαφορά στο ύψος και την ευθυγράμμιση.</div>
+        <div class="actions">
+          <a class="btn" href="#">Περισσότερα</a>
+          <a class="btn" href="#">Κοινοποίηση</a>
+        </div>
+      </article>
+    </div>
+
+    <h2>2) Με subgrid</h2>
+    <div class="page-grid">
+      <article class="card card-subgrid span-6">
+        <div class="media"></div>
+        <div class="aside blk">ASIDE (c1–c3)</div>
+        <div class="title blk">Τίτλος (c3–c10)</div>
+        <div class="meta  blk">Meta (c3–c6)</div>
+        <div class="body  blk">Κείμενο (c6–τέλος)</div>
+        <div class="actions">
+          <a class="btn" href="#">Περισσότερα</a>
+          <a class="btn" href="#">Κοινοποίηση</a>
+        </div>
+      </article>
+
+      <article class="card card-subgrid span-8">
+        <div class="media"></div>
+        <div class="aside blk">ASIDE (c1–c3)</div>
+        <div class="title blk">Τίτλος (c3–c10)</div>
+        <div class="meta  blk">Meta (c3–c6)</div>
+        <div class="body  blk">Κείμενο (c6–τέλος)</div>
+        <div class="actions">
+          <a class="btn" href="#">Περισσότερα</a>
+          <a class="btn" href="#">Κοινοποίηση</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</body>
+</html>
