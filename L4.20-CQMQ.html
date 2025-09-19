@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Container vs Media Queries</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      gap: 40px;
+      padding: 20px;
+      background: #f0f0f0;
+      flex-wrap: wrap;
+    }
+
+    .section {
+      flex: 1 1 300px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    /* ---------------- */
+    /* Container Queries */
+    /* ---------------- */
+    .cq-container {
+      border: 2px solid #333;
+      padding: 10px;
+      background: white;
+      container-type: inline-size; /* Ενεργοποιεί container queries */
+      max-width: 500px;
+    }
+
+    .cq-card {
+      padding: 20px;
+      background: lightblue;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    @container (max-width: 300px) {
+      .cq-card {
+        background: lightcoral;
+        font-size: 14px;
+      }
+    }
+
+    /* ---------------- */
+    /* Media Queries */
+    /* ---------------- */
+    .mq-container {
+      border: 2px solid #333;
+      padding: 10px;
+      background: white;
+      max-width: 500px;
+    }
+
+    .mq-card {
+      padding: 20px;
+      background: lightgreen;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .mq-card {
+        background: orange;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="section">
+    <h2>Container Query</h2>
+    <div class="cq-container" style="max-width: 300px;">
+      <div class="cq-card">Στενό container</div>
+    </div>
+    <br>
+    <div class="cq-container" style="max-width: 500px;">
+      <div class="cq-card">Πλατύ container</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Media Query</h2>
+    <div class="mq-container" style="max-width: 300px;">
+      <div class="mq-card">Στενό container</div>
+    </div>
+    <br>
+    <div class="mq-container" style="max-width: 500px;">
+      <div class="mq-card">Πλατύ container</div>
+    </div>
+  </div>
+</body>
+</html>
