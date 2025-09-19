@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Responsive Layout Demo (Mobile / Tablet / Desktop)</title>
+  <style>
+    :root{
+      --header:#cfe2f3;
+      --hero:#d9ead3;
+      --card:#fff2cc;
+      --sidebar:#e6e6e6;
+      --footer:#f4cccc;
+      --gap:1rem;
+      --radius:10px;
+    }
+    /* Base reset-ish */
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font:16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:#f7f7f7;
+      color:#222;
+    }
+    .frame{
+      /* “συσκευή”/καμβάς για το layout */
+      max-width:1200px;
+      margin:clamp(12px,3vw,32px) auto;
+      padding:clamp(10px,2vw,20px);
+      background:#fff;
+      border:2px solid #000;
+      border-radius:14px;
+    }
+
+    /* Κοινά στοιχεία */
+    header, .hero, .content, aside, footer{
+      border-radius:var(--radius);
+    }
+    header{ background:var(--header); padding:1rem; font-weight:700; }
+    .hero{ background:var(--hero); padding:1.25rem; }
+    .card{ background:var(--card); padding:1rem; border-radius:var(--radius); }
+    aside{ background:var(--sidebar); padding:1rem; }
+    footer{ background:var(--footer); padding:1rem; text-align:center; }
+
+    /* --- Mobile: default (κάτω από 768px) — μία στήλη --- */
+    .grid{
+      display:grid;
+      gap:var(--gap);
+      grid-template-columns: 1fr; /* 1 στήλη */
+    }
+    .content{
+      display:grid;
+      gap:var(--gap);
+      grid-template-columns: 1fr; /* καρτέλες κατακόρυφα */
+    }
+
+    /* --- Tablet: 768–1024px — δύο στήλες περιεχομένου --- */
+    @media (min-width:768px){
+      .content{
+        grid-template-columns: 1fr 1fr; /* 2 στήλες */
+      }
+      /* Προαιρετικό “section” κάτω από τις κάρτες, όπως στο σχήμα */
+      .wide-row{
+        grid-column: 1 / -1; /* να πιάνει όλο το πλάτος των 2 στηλών */
+      }
+    }
+
+    /* --- Desktop: ≥1024px — 2 στήλες + sidebar --- */
+    @media (min-width:1024px){
+      .grid{
+        grid-template-columns: 2fr 1fr; /* main + sidebar */
+        align-items:start;
+      }
+      .main{
+        display:grid;
+        gap:var(--gap);
+        grid-template-columns: 1fr 1fr; /* 2 στήλες στο main */
+        grid-auto-rows: minmax(120px, auto);
+      }
+      .hero{
+        grid-column: 1 / span 2; /* hero επάνω από τις 2 στήλες */
+      }
+      /* Το .content στο desktop γίνεται μέρος του .main */
+      .content{ grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Μικρή αισθητική πινελιά */
+    .badge {
+      display:inline-block;
+      font-size:12px;
+      padding:.2rem .5rem;
+      border:1px solid #000;
+      border-radius:999px;
+      background:#fff;
+      margin-left:.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame" aria-label="Responsive canvas">
+    <header>
+      Responsive Demo
+      <span class="badge" id="bp">Mobile &lt;768px</span>
+    </header>
+
+    <!-- Desktop: 2-col grid (main + sidebar). Σε mobile/tablet γίνεται 1 στήλη -->
+    <div class="grid">
+      <!-- MAIN COLUMN -->
+      <section class="main" aria-label="Main content">
+        <div class="hero">Hero Section (banner / intro)</div>
+
+        <!-- Κάρτες περιεχομένου (mobile: 1 στήλη, tablet/desktop: 2) -->
+        <div class="content">
+          <article class="card">Κάρτα 1 – περιεχόμενο</article>
+          <article class="card">Κάρτα 2 – περιεχόμενο</article>
+          <article class="card">Κάρτα 3 – περιεχόμενο</article>
+          <article class="card">Κάρτα 4 – περιεχόμενο</article>
+        </div>
+
+        <!-- Πρόσθετη ζώνη πλήρους πλάτους (όπως στο tablet panel) -->
+        <div class="wide-row card">Ζώνη πλήρους πλάτους (π.χ. promo ή CTA)</div>
+      </section>
+
+      <!-- SIDEBAR (εμφανής μόνο στο desktop layout ως ξεχωριστή στήλη) -->
+      <aside aria-label="Sidebar">
+        Sidebar – widgets, links, φίλτρα, κ.λπ.
+      </aside>
+    </div>
+
+    <footer>Υποσέλιδο / Footer</footer>
+  </div>
+
+  <script>
+    // Μικρό helper για να δείχνει ποιο breakpoint “τρέχει”
+    const badge = document.getElementById('bp');
+    function setBP(){
+      const w = window.innerWidth;
+      if (w >= 1024) badge.textContent = 'Desktop ≥1024px';
+      else if (w >= 768) badge.textContent = 'Tablet 768–1024px';
+      else badge.textContent = 'Mobile <768px';
+    }
+    setBP();
+    window.addEventListener('resize', setBP);
+  </script>
+</body>
+</html>
