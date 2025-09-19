@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Background & Font-size</title>
+  <style>
+    /* Βασικά στυλ */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      transition: all 0.3s ease; /* ομαλές αλλαγές */
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+    }
+
+    .container {
+      min-height: 100vh; /* γεμίζει όλη την οθόνη */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* Mobile: έως 767px */
+    @media (max-width: 767px) {
+      body {
+        font-size: 2.2rem;
+        background: #fdf7e3; /* απαλό κίτρινο */
+      }
+      h1 { font-size: 2.5rem; }
+    }
+
+    /* Tablet: 768px – 1199px */
+    @media (min-width: 768px) and (max-width: 1199px) {
+      body {
+        font-size: 2.7rem;
+        background: #e3f7fd; /* απαλό γαλάζιο */
+      }
+      h1 { font-size: 3rem; }
+    }
+
+    /* Desktop: από 1200px και πάνω */
+    @media (min-width: 1200px) {
+      body {
+        font-size: 3.5rem;
+        background: #e8fbe3; /* απαλό πράσινο */
+      }
+      h1 { font-size: 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Responsive Demo</h1>
+    <p>Μίκρυνε ή μεγάλωσε το παράθυρο για να δεις αλλαγές στο font-size και στο background!</p>
+  </div>
+</body>
+</html>
