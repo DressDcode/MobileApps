@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Παράδειγμα ευέλικτων εικόνων – 3 προσεγγίσεις με κουμπιά</title>
+  <style>
+    :root { --gap: .5rem; --bg: #0b1020; --card: #121a33; --text: #e9eefc; --muted: #a9b3d6; --border: #1e2a55; --accent:#5aa7ff; }
+    html, body { height: 100%; }
+    body { margin: 0; font: 15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color: var(--text); background: radial-gradient(1200px 600px at 20% -10%, #12204a 0%, var(--bg) 55%); }
+    .page { max-width: 900px; margin: 0 auto; padding: 1.5rem .5rem 2rem; }
+    h1 { font-size: clamp(1.4rem, 1rem + 2vw, 2rem); margin: 0 0 .5rem; }
+    p.lead { color: var(--muted); margin: 0 0 .75rem; }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 1rem; }
+    .tab-btn { cursor: pointer; border: 1px solid var(--border); background: #0e1a39; color: var(--text); padding: .35rem .7rem; border-radius: 999px; font-weight: 600; font-size:.9rem; }
+    .tab-btn[aria-selected="true"] { outline: 2px solid var(--accent); background: #0f2149; }
+
+    .demo-area { background: #0a1229; border: 1px dashed var(--border); border-radius: 10px; padding: .5rem; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01)); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .card h2 { margin: 0; font-size: .95rem; padding: .5rem .75rem; border-bottom: 1px solid var(--border); background: #0e162e; }
+    .card .content { padding: .75rem; display: grid; gap: .5rem; }
+
+    .frame { background: #0d1530; border: 1px solid var(--border); border-radius: 8px; padding: .35rem; }
+    .frame p { margin: .2rem 0 0; font-size: .8rem; color: var(--muted); }
+    .note { color: var(--muted); font-size: .85rem; }
+
+    /* Εικόνες ανά προσέγγιση */
+    .fixed-img { width: 600px; height: auto; display: block; }
+    .maxw-img { max-width: 100%; height: auto; display: block; }
+    .minmax-img { width: auto; max-width: 100%; min-width: 350px; height: auto; display: block; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>Παράδειγμα ευέλικτων εικόνων</h1>
+    <p class="lead">Επίλεξε μία από τις 3 προσεγγίσεις και μετά άλλαξε το viewport από τα DevTools.</p>
+
+    <div class="tabs" role="tablist" aria-label="Εναλλαγή προσέγγισης">
+      <button class="tab-btn" role="tab" id="t-fixed" aria-controls="p-fixed" aria-selected="false">1) Χωρίς τεχνική</button>
+      <button class="tab-btn" role="tab" id="t-maxw" aria-controls="p-maxw" aria-selected="true">2) max-width:100%</button>
+      <button class="tab-btn" role="tab" id="t-minmax" aria-controls="p-minmax" aria-selected="false">3) min-width + max-width</button>
+    </div>
+
+    <div class="demo-area">
+      <section id="p-fixed" class="panel" role="tabpanel" aria-labelledby="t-fixed">
+        <article class="card">
+          <h2>1) Χωρίς ευέλικτη εικόνα (σταθερό πλάτος)</h2>
+          <div class="content">
+            <p class="note">Η εικόνα έχει <code>width: 600px</code>. Κάτω από 600px viewport προκαλεί υπερχείλιση.</p>
+            <div class="frame">
+              <img class="fixed-img" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop" alt="Βουνά και λίμνη" />
+              <p>CSS: <code>.fixed-img { width: 600px; }</code></p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="p-maxw" class="panel active" role="tabpanel" aria-labelledby="t-maxw">
+        <article class="card">
+          <h2>2) Ευέλικτη με <code>max-width: 100%</code></h2>
+          <div class="content">
+            <p class="note">Η εικόνα δεν ξεχειλίζει ποτέ και προσαρμόζεται στο viewport.</p>
+            <div class="frame">
+              <img class="maxw-img" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop" alt="Βουνά και λίμνη" />
+              <p>CSS: <code>.maxw-img { max-width: 100%; height: auto; }</code></p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section id="p-minmax" class="panel" role="tabpanel" aria-labelledby="t-minmax">
+        <article class="card">
+          <h2>3) Συνδυασμός <code>min-width</code> & <code>max-width</code></h2>
+          <div class="content">
+            <p class="note">Η εικόνα μπορεί να προκαλέσει υπερχείλιση κάτω από 350px γιατί ορίζουμε <code>min-width:350px</code>.</p>
+            <div class="frame">
+              <img class="minmax-img" src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop" alt="Βουνά και λίμνη" />
+              <p>CSS: <code>.minmax-img { width:auto; max-width:100%; min-width:350px; height:auto; }</code></p>
+            </div>
+          </div>
+        </article>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.panel');
+    function activate(id){
+      panels.forEach(p => p.classList.remove('active'));
+      tabs.forEach(t => t.setAttribute('aria-selected','false'));
+      document.getElementById('p-' + id).classList.add('active');
+      document.getElementById('t-' + id).setAttribute('aria-selected','true');
+    }
+    tabs.forEach(btn => btn.addEventListener('click', e => {
+      const id = e.currentTarget.id.replace('t-','');
+      activate(id);
+    }));
+    activate('maxw');
+  </script>
+</body>
+</html>
