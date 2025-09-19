@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Flex vs Grid vs Inline</title>
+  <style>
+    .demo {
+      margin: 8px 0;
+      border: 2px dashed gray;
+      padding: 8px;
+    }
+
+    .flex {
+      display: flex;
+      border: 2px solid blue;
+      margin-bottom: 10px;
+    }
+
+    .inline-flex {
+      display: inline-flex;
+      border: 2px solid green;
+      margin-right: 10px;
+    }
+
+    .inline-block {
+      display: inline-block;
+      width: 120px;
+      height: 60px;
+      border: 2px solid orange;
+      margin-right: 10px;
+      text-align: center;
+      vertical-align: middle;
+      line-height: 60px;
+    }
+
+    .block {
+      display: block;
+      width: 120px;
+      height: 60px;
+      border: 2px solid red;
+      margin-bottom: 10px;
+      text-align: center;
+      line-height: 60px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 2px solid purple;
+      margin-bottom: 10px;
+    }
+
+    .inline-grid {
+      display: inline-grid;
+      grid-template-columns: repeat(2, auto);
+      border: 2px solid brown;
+      margin-right: 10px;
+    }
+
+    .child {
+      background: lightgray;
+      margin: 4px;
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>1. display: flex (μπλοκ flex container)</h2>
+  <div class="flex">
+    <div class="child">A</div>
+    <div class="child">B</div>
+    <div class="child">C</div>
+  </div>
+  <p>Μπλε κουτί: flex container σε block επίπεδο. Τα παιδιά του στοιχίζονται σε σειρά.</p>
+
+  <h2>2. display: inline-flex (inline flex container)</h2>
+  <div class="inline-flex">
+    <div class="child">A</div>
+    <div class="child">B</div>
+  </div>
+  <div class="inline-flex">
+    <div class="child">C</div>
+    <div class="child">D</div>
+  </div>
+  <p>Πράσινα κουτιά: flex containers σε inline επίπεδο, κάθονται δίπλα-δίπλα.</p>
+
+  <h2>3. display: inline-block</h2>
+  <div class="inline-block">Hello</div>
+  <div class="inline-block">World</div>
+  <p>Πορτοκαλί κουτιά: inline-block, έχουν width/height αλλά όχι flex.</p>
+
+  <h2>4. display: block</h2>
+  <div class="block">Block 1</div>
+  <div class="block">Block 2</div>
+  <p>Κόκκινα κουτιά: block, το καθένα πιάνει ολόκληρη γραμμή.</p>
+
+  <h2>5. display: grid (μπλοκ grid container)</h2>
+  <div class="grid">
+    <div class="child">1</div>
+    <div class="child">2</div>
+    <div class="child">3</div>
+    <div class="child">4</div>
+    <div class="child">5</div>
+    <div class="child">6</div>
+  </div>
+  <p>Μωβ κουτί: grid container σε block επίπεδο, χωρίζεται σε 3 στήλες.</p>
+
+  <h2>6. display: inline-grid (inline grid container)</h2>
+  <div class="inline-grid">
+    <div class="child">A</div>
+    <div class="child">B</div>
+    <div class="child">C</div>
+  </div>
+  <div class="inline-grid">
+    <div class="child">D</div>
+    <div class="child">E</div>
+  </div>
+  <p>Καφέ κουτιά: inline-grid containers, κάθονται το ένα δίπλα στο άλλο, με δική τους grid διάταξη.</p>
+
+</body>
+</html>
