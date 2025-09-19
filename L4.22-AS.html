@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Aspect Ratio Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+    }
+
+    .box {
+      width: 50%;
+      aspect-ratio: 16 / 9;
+      background: lightblue;
+      margin: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .images {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .image-container {
+      flex: 1;
+      aspect-ratio: 4 / 3;
+      border: 2px solid #333;
+      overflow: hidden;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .cover img {
+      object-fit: cover;
+    }
+
+    .contain img {
+      object-fit: contain;
+      background: #eee; /* για να φαίνεται το letterbox */
+    }
+  </style>
+</head>
+<body>
+  <h1>Demo: CSS aspect-ratio</h1>
+
+  <div class="box">16:9 Box</div>
+
+  <h2>Εικόνες σε container 4:3</h2>
+  <div class="images">
+    <div class="image-container cover">
+      <img src="https://picsum.photos/800/600" alt="Demo cover">
+      <p style="text-align:center">cover</p>
+    </div>
+
+    <div class="image-container contain">
+      <img src="https://picsum.photos/800/600" alt="Demo contain">
+      <p style="text-align:center">contain</p>
+    </div>
+  </div>
+</body>
+</html>
