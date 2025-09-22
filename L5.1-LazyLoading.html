@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lazy Loading Demo (Images, Backgrounds, Iframes)</title>
+  <style>
+    :root { --gap: 48px; --maxw: 900px; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5; margin: 0; color: #222; background: #f7f7f8;
+    }
+    header, section { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    header { padding-top: 48px; }
+    h1, h2 { margin: 0 0 12px; }
+    p { margin: 0 0 12px; }
+    .spacer { height: var(--gap); }
+    .card {
+      background: #fff; border-radius: 14px; box-shadow: 0 10px 24px rgba(0,0,0,.07);
+      overflow: hidden; border: 1px solid #eee; margin-bottom: 24px;
+    }
+    .card__body { padding: 16px 16px 20px; }
+
+    /* Responsive media */
+    img, iframe { display: block; width: 100%; height: auto; }
+    .media-wrap { position: relative; overflow: hidden; }
+    .media-wrap.ratio-16x9 { aspect-ratio: 16 / 9; }
+    .media-wrap.ratio-3x2  { aspect-ratio: 3 / 2; }
+    .blur-up {
+      filter: blur(12px); transform: scale(1.02);
+      transition: filter .4s ease, transform .4s ease;
+      background: #eee;
+    }
+    .blur-up.is-loaded { filter: blur(0); transform: none; }
+
+    /* Lazy background blocks */
+    .bg-block {
+      height: 320px; border-radius: 12px; background: #e9ecef;
+      background-size: cover; background-position: center;
+      display: grid; place-items: center; color: #333; font-weight: 600;
+    }
+    .note {
+      background: #fff8e1; border: 1px solid #ffe082; color: #795548;
+      padding: 10px 12px; border-radius: 10px;
+    }
+
+    /* Small helper for code-like text */
+    code { background: #f2f2f2; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Lazy Loading Demo</h1>
+    <p>Παράδειγμα με εικόνες (<code>loading="lazy"</code>), background images (IntersectionObserver) και iframe (YouTube).</p>
+    <p class="note">
+      Σημείωση: Πολλά ειδησεογραφικά sites (π.χ. protothema.gr) δεν επιτρέπουν να τα ενσωματώσεις σε <code>&lt;iframe&gt;</code> λόγω
+      πολιτικών ασφαλείας (<code>X-Frame-Options</code> ή <code>CSP frame-ancestors</code>), οπότε χρησιμοποίησε πηγή που το επιτρέπει (YouTube, δικό σου page κ.λπ.).
+    </p>
+  </header>
+
+  <section>
+    <h2>1) Lazy loading εικόνων με native attribute</h2>
+
+    <div class="card">
+      <div class="media-wrap ratio-3x2">
+        <!-- Χαμηλής ανάλυσης preview ως αρχικό src για blur-up effect -->
+        <img
+          class="blur-up"
+          src="https://picsum.photos/48/32?random=1"
+          data-src="https://picsum.photos/1200/800?random=1"
+          alt="Δείγμα εικόνας 1"
+          width="1200" height="800"
+          loading="lazy"
+          decoding="async"
+          />
+      </div>
+      <div class="card__body">
+        <p>Η εικόνα φορτώνεται τεμπέλικα όταν πλησιάσει στο viewport. Ορίζουμε <code>width</code>/<code>height</code> για σταθερό layout.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="media-wrap ratio-3x2">
+        <img
+          class="blur-up"
+          src="https://picsum.photos/48/32?random=2"
+          data-src="https://picsum.photos/1200/800?random=2"
+          alt="Δείγμα εικόνας 2"
+          width="1200" height="800"
+          loading="lazy"
+          decoding="async"
+          srcset="
+            https://picsum.photos/600/400?random=2 600w,
+            https://picsum.photos/900/600?random=2 900w,
+            https://picsum.photos/1200/800?random=2 1200w"
+          sizes="(max-width: 700px) 100vw, 700px"
+        />
+      </div>
+      <div class="card__body">
+        <p>Με <code>srcset</code> & <code>sizes</code> ο browser επιλέγει κατάλληλη ανάλυση ανά συσκευή.</p>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <h2>2) Lazy loading background-images με IntersectionObserver</h2>
+    <div class="card">
+      <div
+        class="bg-block js-lazy-bg"
+        data-bg="https://picsum.photos/1400/900?random=3"
+        aria-label="Background εικόνα που φορτώνει όταν εμφανιστεί"
+      >
+        Θα φορτωθώ όταν εμφανιστώ 👋
+      </div>
+      <div class="card__body">
+        <p>Για background εικόνες δεν υπάρχει native <code>loading</code>. Χρησιμοποιούμε JavaScript για να ορίσουμε το <code>background-image</code> όταν το στοιχείο μπει στο viewport.</p>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+
+    <h2>3) Lazy loading iframe (YouTube)</h2>
+    <div class="card">
+      <div class="media-wrap ratio-16x9">
+        <!-- Poster/placeholder μέχρι να φορτώσει το iframe -->
+        <img
+          class="blur-up"
+          src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+          alt="Video placeholder"
+          width="1280" height="720"
+          loading="lazy"
+          decoding="async"
+        />
+        <!-- Το πραγματικό iframe μπαίνει δυναμικά όταν γίνει intersect -->
+        <iframe
+          class="js-lazy-iframe"
+          title="YouTube video player"
+          data-src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          style="position:absolute; inset:0; border:0;"
+        ></iframe>
+      </div>
+      <div class="card__body">
+        <p>Το <code>iframe</code> έχει <code>loading="lazy"</code>. Επιπλέον, τοποθετούμε τη διεύθυνση στο <code>data-src</code> και τη μεταφέρουμε σε <code>src</code> όταν χρειαστεί, ώστε να καθυστερεί και η δημιουργία του περιεχομένου.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Helper: προωθούμε το data-src => src και αφαιρούμε blur όταν φορτώσει
+    function upgradeImage(img) {
+      if (img.dataset.src) img.src = img.dataset.src;
+      if (img.complete) {
+        img.classList.add('is-loaded');
+      } else {
+        img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
+      }
+    }
+
+    // 1) Εικόνες με data-src (blur-up)
+    const lazyImgs = Array.from(document.querySelectorAll('img.blur-up[data-src]'));
+
+    // 2) Background blocks
+    const lazyBgs = Array.from(document.querySelectorAll('.js-lazy-bg[data-bg]'));
+
+    // 3) Iframes με data-src
+    const lazyIframes = Array.from(document.querySelectorAll('iframe.js-lazy-iframe[data-src]'));
+
+    // Αν υπάρχει IntersectionObserver, κάνε lazy μόνο όταν έρθουν κοντά
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+
+          const el = entry.target;
+
+          if (el.tagName === 'IMG') {
+            upgradeImage(el);
+          } else if (el.classList.contains('js-lazy-bg')) {
+            el.style.backgroundImage = `url("${el.dataset.bg}")`;
+          } else if (el.tagName === 'IFRAME') {
+            el.src = el.dataset.src;
+          }
+
+          obs.unobserve(el);
+        });
+      }, { rootMargin: '200px 0px 200px 0px' });
+
+      lazyImgs.forEach(i => io.observe(i));
+      lazyBgs.forEach(b => io.observe(b));
+      lazyIframes.forEach(f => io.observe(f));
+
+    } else {
+      // Fallback: παλιότεροι browsers — φόρτωσε τα πάντα αμέσως
+      lazyImgs.forEach(upgradeImage);
+      lazyBgs.forEach(b => b.style.backgroundImage = `url("${b.dataset.bg}")`);
+      lazyIframes.forEach(f => f.src = f.dataset.src);
+    }
+  </script>
+
+  <noscript>
+    <section style="max-width:900px;margin:0 auto;padding:24px">
+      <p><strong>Σημείωση:</strong> Η σελίδα χρησιμοποιεί JavaScript για lazy loading.
+      Με απενεργοποιημένο JS, οι εικόνες φορτώνουν από τα <code>src</code> και τα background
+      δεν θα γίνουν lazy.</p>
+    </section>
+  </noscript>
+</body>
+</html>
