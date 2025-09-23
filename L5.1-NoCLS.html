@@ -2,22 +2,58 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <title>CLS Example - Κακό</title>
+  <title>CLS Examples με Grid</title>
   <style>
-    body { font-family: Arial, sans-serif; }
-    .container { width: 600px; margin: auto; }
-    img { max-width: 100%; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .example {
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      background: #f9f9f9;
+    }
+    .example h2 {
+      margin-top: 0;
+      font-size: 18px;
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 10px auto;
+    }
+    .bad { border-color: #e74c3c; }
+    .good { border-color: #2ecc71; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Άρθρο για το CLS</h1>
-    <p>Αυτό είναι ένα εισαγωγικό κείμενο...</p>
+  <h1>Σύγκριση CLS Παραδειγμάτων</h1>
+  <div class="grid">
     
-    <!-- Εικόνα χωρίς width/height -->
-    <img src="https://picsum.photos/600/400" alt="Τυχαία εικόνα">
+    <!-- Κακό Παράδειγμα -->
+    <div class="example bad">
+      <h2>❌ Χωρίς Διαστάσεις</h2>
+      <p>Αυτό είναι ένα εισαγωγικό κείμενο...</p>
+      <img src="https://picsum.photos/600/400" alt="Τυχαία εικόνα χωρίς διαστάσεις">
+      <p>Το κείμενο μετακινείται όταν φορτώσει η εικόνα.</p>
+    </div>
     
-    <p>Κείμενο κάτω από την εικόνα. Αυτό θα "πηδήξει" όταν φορτώσει η εικόνα.</p>
+    <!-- Καλό Παράδειγμα -->
+    <div class="example good">
+      <h2>✅ Με Διαστάσεις</h2>
+      <p>Αυτό είναι ένα εισαγωγικό κείμενο...</p>
+      <img src="https://picsum.photos/600/400" alt="Τυχαία εικόνα με διαστάσεις" width="600" height="400">
+      <p>Το layout μένει σταθερό γιατί έχει δεσμευτεί χώρος.</p>
+    </div>
+    
   </div>
 </body>
 </html>
