@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="el">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini picture demo</title>
+<style>
+  /* μόνο για να περιορίσουμε πλάτος και να αποφύγουμε CLS */
+  .wrap { max-width: 900px; margin: 16px auto; padding: 8px; }
+  img { max-width: 100%; height: auto; display: block; }
+</style>
+
+<div class="wrap">
+  <h1>picture + srcset + sizes (AVIF → WebP → JPEG)</h1>
+
+  <picture>
+    <!-- AVIF -->
+    <source type="image/avif"
+      srcset="
+        https://res.cloudinary.com/demo/image/upload/f_avif,w_480/flower.jpg 480w,
+        https://res.cloudinary.com/demo/image/upload/f_avif,w_768/flower.jpg 768w,
+        https://res.cloudinary.com/demo/image/upload/f_avif,w_1200/flower.jpg 1200w"
+      sizes="(max-width:600px) 92vw, (max-width:900px) 80vw, 900px">
+    <!-- WebP -->
+    <source type="image/webp"
+      srcset="
+        https://res.cloudinary.com/demo/image/upload/f_webp,w_480/flower.jpg 480w,
+        https://res.cloudinary.com/demo/image/upload/f_webp,w_768/flower.jpg 768w,
+        https://res.cloudinary.com/demo/image/upload/f_webp,w_1200/flower.jpg 1200w"
+      sizes="(max-width:600px) 92vw, (max-width:900px) 80vw, 900px">
+
+    <!-- JPEG fallback + διαστάσεις για σταθερό layout -->
+    <img
+      src="https://res.cloudinary.com/demo/image/upload/w_1200/flower.jpg"
+      srcset="
+        https://res.cloudinary.com/demo/image/upload/w_480/flower.jpg 480w,
+        https://res.cloudinary.com/demo/image/upload/w_768/flower.jpg 768w,
+        https://res.cloudinary.com/demo/image/upload/w_1200/flower.jpg 1200w"
+      sizes="(max-width:600px) 92vw, (max-width:900px) 80vw, 900px"
+      width="1200" height="800" alt="Demo εικόνα">
+  </picture>
+</div>
