@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>SVG με Hover</title>
+  <style>
+    /* Κεντράρισμα στη σελίδα */
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f0f0;
+    }
+
+    /* Στυλ SVG */
+    svg {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    /* Εφέ hover στο SVG */
+    svg:hover {
+      transform: scale(1.1);
+    }
+
+    /* Εφέ hover μόνο στον κύκλο */
+    circle {
+      transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+
+    circle:hover {
+      fill: orange;
+      stroke: red;
+    }
+  </style>
+</head>
+<body>
+  <!-- Ενσωματωμένο SVG -->
+  <svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Κύκλος -->
+    <circle cx="100" cy="100" r="80" fill="lightblue" stroke="darkblue" stroke-width="4" />
+  </svg>
+</body>
+</html>
