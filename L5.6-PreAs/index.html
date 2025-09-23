@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <title>Async vs Defer (πραγματικό demo)</title>
+  <style>
+    body { font-family: system-ui, sans-serif; line-height: 1.4 }
+    #log p { margin: 4px 0 }
+    code { background: #f4f4f4; padding: 0 6px; border-radius: 4px }
+  </style>
+</head>
+<body>
+  <h1>Async vs Defer</h1>
+  <p>Δες τη σειρά εκτέλεσης παρακάτω:</p>
+  <div id="log"></div>
+
+  <!-- ΔΥΟ async scripts (δεν εγγυώνται σειρά) -->
+  <script async src="async-a.js"></script>
+  <script async src="async-b.js"></script>
+
+  <!-- ΔΥΟ defer scripts (κρατούν τη σειρά και τρέχουν μετά το parsing) -->
+  <script defer src="defer-c.js"></script>
+  <script defer src="defer-d.js"></script>
+
+  <script>
+    // helper για καθαρή εκτύπωση με timestamp
+    window.log = function(msg) {
+      const el = document.getElementById('log');
+      const t = (performance.now() / 1000).toFixed(3);
+      el.insertAdjacentHTML('beforeend', `<p><code>[${t}s]</code> ${msg}</p>`);
+    };
+    log('DOM parsing ξεκίνησε…');
+  </script>
+</body>
+</html>
