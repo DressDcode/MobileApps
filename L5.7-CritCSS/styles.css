@@ -1,0 +1,19 @@
+/* Extra styling για όλη τη σελίδα */
+body {
+  background: #fafafa;
+  line-height: 1.6;
+}
+
+main {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+p {
+  color: #333;
+  font-size: 18px;
+}

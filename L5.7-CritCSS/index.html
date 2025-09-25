@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Critical CSS Example</title>
+
+  <!-- ✅ Critical CSS inline για above-the-fold -->
+  <style>
+    /* Reset & βασικά */
+    body { margin: 0; font-family: Arial, sans-serif; }
+    header { background: #0044cc; color: white; padding: 20px; }
+    header h1 { margin: 0; font-size: 24px; }
+    .hero { background: #eee; padding: 50px; text-align: center; }
+    .hero h2 { margin: 0; font-size: 28px; }
+  </style>
+
+  <!-- 🔄 Full CSS αρχείο φορτώνεται στο background -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Η σελίδα μου</h1>
+  </header>
+  <section class="hero">
+    <h2>Καλώς ήρθες!</h2>
+    <p>Αυτό είναι το πάνω μέρος της σελίδας.</p>
+  </section>
+  <main>
+    <p>Περισσότερο περιεχόμενο πιο κάτω...</p>
+    <p>(Αυτό θα πάρει extra styling μόλις φορτώσει το external CSS)</p>
+  </main>
+</body>
+</html>
