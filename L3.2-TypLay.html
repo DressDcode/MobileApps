@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Τυπική Διάταξη Ιστοσελίδας</title>
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1"> -->
+  <style>
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .grid {
+      display: grid;
+      grid-template-areas:
+        "header"
+        "nav"
+        "main"
+        "footer";
+      grid-template-rows: auto auto 1fr auto;
+      min-height: 100vh;
+    }
+    header { grid-area: header; padding: 16px; border-bottom: 1px solid #ddd; }
+    nav    { grid-area: nav;    padding: 12px; border-bottom: 1px solid #eee; }
+    main   {
+      grid-area: main;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 2fr 1fr;
+      grid-template-areas: "content aside";
+      padding: 16px;
+    }
+    section { grid-area: content; padding: 8px; border: 1px dashed #ccc; }
+    article { padding: 8px; border: 1px solid #eaeaea; margin-bottom: 12px; }
+    aside   { grid-area: aside;  padding: 12px; border: 1px dashed #ccc; }
+    footer  { grid-area: footer; padding: 16px; border-top: 1px solid #ddd; }
+    header { background: #fafafa; }
+    nav    { background: #fcfcfc; }
+    aside  { background: #fffef6; }
+    footer { background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div class="grid">
+    <header>
+      <h1>Η Σελίδα Μου</h1>
+      <p>Γενικό κεφαλίδιο της ιστοσελίδας.</p>
+    </header>
+
+    <nav>
+      <p>Μενού: Αρχική | Σχετικά | Επικοινωνία</p>
+    </nav>
+
+    <main>
+      <section>
+        <h1>Νέα</h1>
+        <article>
+          <h1>Τίτλος Άρθρου</h1>
+          <p>Αυτό είναι το κείμενο του άρθρου. Βρίσκεται στο κύριο περιεχόμενο.</p>
+        </article>
+        <article>
+          <h1>Άλλο Άρθρο</h1>
+          <p>Ένα δεύτερο παράδειγμα άρθρου στο ίδιο section.</p>
+        </article>
+      </section>
+
+      <aside>
+        <h1>Σημειώσεις</h1>
+        <p>Συμπληρωματικές πληροφορίες σχετικές με το περιεχόμενο.</p>
+      </aside>
+    </main>
+
+    <footer>
+      <p>Υποσέλιδο: © 2025 Όλα τα δικαιώματα διατηρούνται.</p>
+    </footer>
+  </div>
+</body>
+</html>
