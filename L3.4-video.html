@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HTML5 Media Demo</title>
+  <style>
+    :root { --radius: 14px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 24px; background: #0b1020; color: #e7e9ee; }
+    h1 { font-size: 24px; margin: 0 0 16px; }
+    .card { background: #121a33; border: 1px solid #223; border-radius: var(--radius); padding: 16px; box-shadow: 0 10px 24px rgba(0,0,0,.25); }
+    .grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 900px) { .grid { grid-template-columns: 1fr 1fr; } }
+    video { width: 100%; border-radius: 12px; background: #000; }
+    .controls { display: grid; grid-template-columns: auto auto 1fr auto auto auto auto; gap: 8px; align-items: center; margin-top: 10px; }
+    .controls button, .controls select, .controls input[type="range"] { 
+      background: #1b2547; color: #e7e9ee; border: 1px solid #334; border-radius: 10px; padding: 8px 10px; line-height: 1; cursor: pointer; font-size: 14px;
+    }
+    .controls input[type="range"] { accent-color: #9ecbff; height: 34px; }
+    .row { display:flex; gap:8px; align-items:center; }
+    code, kbd { background: #18213f; padding: .2em .45em; border-radius: 8px; border: 1px solid #2a355e; }
+    .pill { display:inline-block; padding:.2em .6em; border:1px solid #2a355e; border-radius:999px; background:#161f3b; font-size:12px; }
+    .log { height: 180px; overflow:auto; background:#0e1530; border:1px solid #223; border-radius: 10px; padding: 8px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; }
+    .small { font-size: 12px; opacity:.85 }
+    .native-toggle { margin: 8px 0 0; }
+  </style>
+</head>
+<body>
+  <h1>HTML5 Media Demo <span class="pill">native + custom</span></h1>
+  <div class="grid">
+    <div class="card">
+      <h2 style="margin-top:0">1) &lt;video&gt; με πολλαπλές <code>&lt;source&gt;</code>, <code>&lt;track&gt;</code> και fallback</h2>
+      <video id="player" crossorigin="anonymous" preload="metadata" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='720'%3E%3Crect fill='%23000' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='42'%3EVideo Poster%3C/text%3E%3C/svg%3E">
+        <!-- Πολλαπλές πηγές: ο browser θα επιλέξει την πρώτη που υποστηρίζει -->
+        <source src="example.webm" type="video/webm" />
+        <source src="example.mp4"  type="video/mp4" />
+        <!-- Υπότιτλοι/λεζάντες μέσω <track>; το src μπαίνει δυναμικά από JS (Blob WebVTT) -->
+        <track id="track-el" kind="subtitles" srclang="el" label="Ελληνικά" default>
+        <!-- Fallback περιεχόμενο αν δεν υποστηρίζεται το video -->
+        Το πρόγραμμα περιήγησής σας δεν υποστηρίζει το στοιχείο <code>&lt;video&gt;</code>.
+        <a href="example.mp4" download>Κατεβάστε το αρχείο</a>.
+      </video>
+
+      <div class="native-toggle small">
+        <label><input id="toggleNative" type="checkbox" checked> Εμφάνιση ενσωματωμένων controls του browser</label>
+      </div>
+
+      <!-- Custom Controls -->
+      <div class="controls" aria-label="Custom controls">
+        <button id="playPause" aria-label="Play/Pause">▶︎/⏸</button>
+        <button id="mute" aria-label="Mute/Unmute">🔇/🔊</button>
+        <input id="seek" type="range" min="0" max="100" step="0.1" value="0" aria-label="Seek" />
+        <input id="volume" type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume" />
+        <select id="rate" aria-label="Playback rate">
+          <option value="0.5">0.5×</option>
+          <option value="0.75">0.75×</option>
+          <option value="1" selected>1×</option>
+          <option value="1.25">1.25×</option>
+          <option value="1.5">1.5×</option>
+          <option value="2">2×</option>
+        </select>
+        <button id="cc" aria-label="Toggle captions">CC</button>
+        <button id="fs" aria-label="Fullscreen">⤢</button>
+      </div>
+
+      <p class="small">Συντομεύσεις: <kbd>Space</kbd> play/pause, <kbd>M</kbd> mute, <kbd>↑/↓</kbd> volume, <kbd>←/→</kbd> seek ±5s, <kbd>F</kbd> fullscreen, <kbd>C</kbd> captions.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">2) HTMLMediaElement API: Ιδιότητες, Μέθοδοι & Γεγονότα</h2>
+      <div class="row small">
+        <div>currentTime: <code id="t">0.00</code>s</div>
+        <div>duration: <code id="d">–</code></div>
+        <div>volume: <code id="v">1</code></div>
+        <div>paused: <code id="p">true</code></div>
+        <div>readyState: <code id="r">0</code></div>
+      </div>
+      <pre class="log" id="log" aria-live="polite"></pre>
+    </div>
+  </div>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const player = $('#player');
+    const playPause = $('#playPause');
+    const muteBtn = $('#mute');
+    const seek = $('#seek');
+    const volume = $('#volume');
+    const rate = $('#rate');
+    const ccBtn = $('#cc');
+    const fsBtn = $('#fs');
+    const logEl = $('#log');
+    const tEl = $('#t');
+    const dEl = $('#d');
+    const vEl = $('#v');
+    const pEl = $('#p');
+    const rEl = $('#r');
+
+    // --- Create a demo WebVTT track dynamically (works without external files) ---
+    const vtt = `WEBVTT\n\n00:00:00.000 --> 00:00:02.000\nΚαλώς ήρθες στο demo!\n\n00:00:02.000 --> 00:00:05.000\nΑυτό είναι ένα παράδειγμα υπότιτλων WebVTT.`;
+    const trackBlob = new Blob([vtt], { type: 'text/vtt' });
+    const trackURL = URL.createObjectURL(trackBlob);
+    const trackEl = document.getElementById('track-el');
+    trackEl.src = trackURL;
+
+    // Show native controls toggle
+    const toggleNative = document.getElementById('toggleNative');
+    const setNativeControls = () => player.controls = toggleNative.checked;
+    toggleNative.addEventListener('change', setNativeControls);
+    setNativeControls();
+
+    // ---- Custom Controls ----
+    playPause.addEventListener('click', () => player.paused ? player.play() : player.pause());
+    muteBtn.addEventListener('click', () => player.muted = !player.muted);
+
+    // Seeking: sync range<->player
+    const updateSeekMax = () => { if (!isNaN(player.duration)) seek.max = player.duration; };
+    player.addEventListener('loadedmetadata', updateSeekMax);
+    player.addEventListener('durationchange', updateSeekMax);
+    seek.addEventListener('input', () => { player.currentTime = seek.valueAsNumber; });
+
+    // Volume
+    volume.addEventListener('input', () => { player.volume = volume.valueAsNumber; });
+    rate.addEventListener('change', () => { player.playbackRate = parseFloat(rate.value); });
+
+    // Captions toggle
+    function setCaptions(enabled) {
+      for (const t of player.textTracks) { t.mode = enabled ? 'showing' : 'disabled'; }
+      ccBtn.classList.toggle('active', enabled);
+    }
+    setCaptions(true);
+    ccBtn.addEventListener('click', () => {
+      const anyShowing = Array.from(player.textTracks).some(t => t.mode === 'showing');
+      setCaptions(!anyShowing);
+    });
+
+    // Fullscreen
+    fsBtn.addEventListener('click', async () => {
+      if (!document.fullscreenElement) {
+        await player.requestFullscreen?.();
+      } else {
+        await document.exitFullscreen?.();
+      }
+    });
+
+    // --- Keyboard shortcuts ---
+    document.addEventListener('keydown', (e) => {
+      if (e.target.closest('input, textarea, select')) return; // don't hijack typing
+      switch (e.key.toLowerCase()) {
+        case ' ': e.preventDefault(); player.paused ? player.play() : player.pause(); break;
+        case 'm': player.muted = !player.muted; break;
+        case 'f': (document.fullscreenElement ? document.exitFullscreen() : player.requestFullscreen?.()); break;
+        case 'c': {
+          const anyShowing = Array.from(player.textTracks).some(t => t.mode === 'showing');
+          setCaptions(!anyShowing); break;
+        }
+        case 'arrowup': player.volume = Math.min(1, player.volume + 0.05); break;
+        case 'arrowdown': player.volume = Math.max(0, player.volume - 0.05); break;
+        case 'arrowleft': player.currentTime = Math.max(0, player.currentTime - 5); break;
+        case 'arrowright': player.currentTime = Math.min(player.duration || Infinity, player.currentTime + 5); break;
+      }
+    });
+
+    // --- HTMLMediaElement state panel & event log ---
+    const events = ['loadstart','loadedmetadata','loadeddata','canplay','canplaythrough','play','pause','seeking','seeked','timeupdate','ratechange','volumechange','waiting','stalled','suspend','ended','error'];
+    const log = (msg) => { const t = new Date().toLocaleTimeString(); logEl.textContent += `[${t}] ${msg}\n`; logEl.scrollTop = logEl.scrollHeight; };
+    events.forEach(ev => player.addEventListener(ev, () => log(`event: ${ev}`)));
+
+    function refreshState() {
+      tEl.textContent = player.currentTime.toFixed(2);
+      dEl.textContent = isNaN(player.duration) ? '–' : player.duration.toFixed(2) + 's';
+      vEl.textContent = player.volume.toFixed(2) + (player.muted ? ' (muted)' : '');
+      pEl.textContent = String(player.paused);
+      rEl.textContent = String(player.readyState);
+      if (!seek.matches(':active')) seek.value = isNaN(player.currentTime) ? 0 : player.currentTime;
+    }
+    setInterval(refreshState, 100);
+
+    // --- NOTE: For a real demo, set valid video sources below ---
+    // You can replace sources programmatically to a small sample video if you have one available:
+    // player.src = 'sample.mp4'; // will override <source> children
+  </script>
+</body>
+</html>
