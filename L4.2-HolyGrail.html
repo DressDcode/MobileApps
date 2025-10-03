@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Holy Grail – Απλή Εκδοχή (5 περιοχές)</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0; font:16px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif}
+
+    /* Απλό Holy Grail με 5 περιοχές */
+    .page{
+      min-height:100svh;
+      display:grid;
+      grid-template-rows:auto 1fr auto; /* header, content, footer */
+      grid-template-columns: 220px 1fr 220px; /* nav | main | aside */
+      grid-template-areas:
+        "header header header"
+        "nav    main   aside"
+        "footer footer footer";
+      gap:10px;
+      padding:10px;
+      background:#f5f7fb;
+    }
+
+    header{ grid-area:header; background:#8ecae6; padding:14px; border-radius:10px; color:#09303b; }
+    nav    { grid-area:nav;    background:#ffafcc; padding:14px; border-radius:10px; }
+    main   { grid-area:main;   background:#caffbf; padding:14px; border-radius:10px; }
+    aside  { grid-area:aside;  background:#ffd6a5; padding:14px; border-radius:10px; }
+    footer { grid-area:footer; background:#bdb2ff; padding:14px; border-radius:10px; text-align:center }
+
+    .box{ border:2px dashed rgba(0,0,0,.12); border-radius:8px; padding:10px; background:rgba(255,255,255,.4) }
+
+    /* Responsive: κάτω από 800px οι στήλες στοιβάζονται */
+    @media (max-width: 800px){
+      .page{
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "nav"
+          "main"
+          "aside"
+          "footer";
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <strong>Header</strong>
+      <div class="box">Λογότυπο, τίτλος, απλό menu.</div>
+    </header>
+
+    <nav>
+      <strong>Nav (Αριστερά)</strong>
+      <div class="box">Συνδέσεις/μενού.</div>
+    </nav>
+
+    <main>
+      <strong>Main</strong>
+      <div class="box">
+        Κύριο περιεχόμενο. Αυτή είναι μια απλούστατη εκδοχή με 5 περιοχές και
+        χρωματιστά backgrounds ώστε να φαίνεται καθαρά η δομή.
+      </div>
+    </main>
+
+    <aside>
+      <strong>Aside (Δεξιά)</strong>
+      <div class="box">Πρόσθετες πληροφορίες / widgets.</div>
+    </aside>
+
+    <footer>
+      <strong>Footer</strong>
+    </footer>
+  </div>
+</body>
+</html>
