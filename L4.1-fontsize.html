@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Διαδραστικό Παράδειγμα: px, em, %, rem</title>
+<style>
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #fafafa;
+    color: #333;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .controls label {
+    font-weight: bold;
+  }
+
+  .container {
+    background-color: #f5f5f5;
+    padding: 20px;
+    font-size: 20px; /* default */
+    border-radius: 12px;
+    transition: font-size 0.3s ease;
+  }
+
+  .example {
+    margin: 10px 0;
+    padding: 10px;
+    color: white;
+    border-radius: 8px;
+  }
+
+  .px   { background-color: #ff6666; font-size: 20px; }
+  .em   { background-color: #66b3ff; font-size: 1.5em; }
+  .percent { background-color: #66cc66; font-size: 150%; }
+  .rem  { background-color: #ffcc66; font-size: 1.5rem; }
+
+  
+  input[type="range"] {
+    width: 200px;
+  }
+</style>
+</head>
+<body>
+
+<h1>📏 Σύγκριση μονάδων: px, em, %, rem</h1>
+
+<div class="controls">
+  <div>
+    <label for="htmlSize">HTML (root) font-size:</label><br>
+    <input type="range" id="htmlSize" min="10" max="30" value="16">
+    <span id="htmlValue">16px</span>
+  </div>
+
+  <div>
+    <label for="containerSize">.container font-size:</label><br>
+    <input type="range" id="containerSize" min="10" max="40" value="20">
+    <span id="containerValue">20px</span>
+  </div>
+</div>
+
+<div class="container" id="demoContainer">
+  <div class="example px">px → 20px (σταθερό)</div>
+  <div class="example em">em → 1.5em (σχετικό με το container)</div>
+  <div class="example percent">% → 150% (σχετικό με το container)</div>
+  <div class="example rem">rem → 1.5rem (σχετικό με το html)</div>
+</div>
+
+<script>
+  const htmlSlider = document.getElementById('htmlSize');
+  const htmlValue = document.getElementById('htmlValue');
+  const containerSlider = document.getElementById('containerSize');
+  const containerValue = document.getElementById('containerValue');
+  const container = document.getElementById('demoContainer');
+
+  htmlSlider.addEventListener('input', () => {
+    const val = htmlSlider.value;
+    document.documentElement.style.fontSize = val + 'px';
+    htmlValue.textContent = val + 'px';
+  });
+
+  containerSlider.addEventListener('input', () => {
+    const val = containerSlider.value;
+    container.style.fontSize = val + 'px';
+    containerValue.textContent = val + 'px';
+  });
+</script>
+
+</body>
+</html>
