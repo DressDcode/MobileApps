@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Παράδειγμα Transform σε Κουμπί</title>
+  <style>
+    body {
+      background: #f2f2f2;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .btn {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Εφέ όταν περνάει το ποντίκι πάνω από το κουμπί */
+    .btn:hover {
+      transform: translateY(-4px) scale(1.05); /* Ανύψωση + ελαφρύ zoom */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Εφέ όταν πατιέται το κουμπί */
+    .btn:active {
+      transform: translateY(0) scale(0.97); /* Μικρή πίεση προς τα μέσα */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Προαιρετικά: focus για πληκτρολόγιο */
+    .btn:focus-visible {
+      outline: 3px solid #1e70bf;
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <button class="btn">Πάτησέ με!</button>
+</body>
+</html>
