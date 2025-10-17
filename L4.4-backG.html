@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Διαδραστικό Demo — background-image, size, repeat, position</title>
+<style>
+  :root{ --bg:#f8fafc; --panel:#fff; --border:#e2e8f0; --accent:#2563eb; }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:#0f172a; }
+  h1{ text-align:center; margin:24px 8px; font-size:clamp(20px,3.5vw,28px) }
+  .wrap{ max-width:1000px; margin:0 auto; padding:0 16px 40px }
+  .panel{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:20px }
+  .row{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:12px }
+  label{ font-weight:600; font-size:14px }
+  select,input[type="text"]{ border:1px solid var(--border); border-radius:10px; padding:8px 10px; background:#fff; font-size:14px }
+  button{ padding:8px 12px; border:1px solid var(--border); border-radius:10px; background:#eef2ff; cursor:pointer }
+  #preview{
+    width:100%; height:320px; border:4px solid #1d4ed8; border-radius:14px;
+    background-color:#e0e7ff; background-image:url("https://picsum.photos/400/300?random=1");
+    background-size:cover; background-repeat:no-repeat; background-position:center;
+    transition:all .3s ease; display:flex; align-items:end; justify-content:center;
+    color:#1e3a8a; font-weight:bold; font-size:18px; text-shadow:1px 1px 3px #fff8; padding-bottom:10px;
+  }
+  .thumbs{ display:flex; gap:8px; flex-wrap:wrap }
+  .thumb{
+    width:72px; height:48px; border-radius:8px; border:1px solid var(--border); overflow:hidden; cursor:pointer
+  }
+  .thumb img{ width:100%; height:100%; object-fit:cover; display:block }
+  .hint{ font-size:13px; color:#475569; margin-top:8px }
+</style>
+</head>
+<body>
+  <h1>🎨 Demo: background-image, size, repeat, position</h1>
+  <div class="wrap">
+    <div class="panel">
+      <div class="row">
+        <label for="imageUrl">Εικόνα φόντου (URL):</label>
+        <input type="text" id="imageUrl" value="https://picsum.photos/400/300?random=1" style="width:320px">
+        <button type="button" id="applyBtn">Εφαρμογή</button>
+      </div>
+
+      <div class="row thumbs" id="thumbs">
+        <!-- έτοιμες επιλογές για δοκιμή -->
+        <div class="thumb"><img src="https://picsum.photos/seed/a/200/150" alt=""></div>
+        <div class="thumb"><img src="https://picsum.photos/seed/b/200/150" alt=""></div>
+        <div class="thumb"><img src="https://picsum.photos/seed/c/200/150" alt=""></div>
+        <div class="thumb"><img src="https://picsum.photos/seed/d/200/150" alt=""></div>
+        <div class="thumb"><img src="https://picsum.photos/seed/e/200/150" alt=""></div>
+      </div>
+
+      <div class="row">
+        <label for="size">background-size:</label>
+        <select id="size">
+          <option value="auto">auto</option>
+          <option value="cover" selected>cover</option>
+          <option value="contain">contain</option>
+          <option value="100% 100%">100% 100%</option>
+          <option value="200px 200px">200px 200px</option>
+        </select>
+
+        <label for="repeat">background-repeat:</label>
+        <select id="repeat">
+          <option value="no-repeat" selected>no-repeat</option>
+          <option value="repeat">repeat</option>
+          <option value="repeat-x">repeat-x</option>
+          <option value="repeat-y">repeat-y</option>
+          <option value="space">space</option>
+          <option value="round">round</option>
+        </select>
+
+        <label for="position">background-position:</label>
+        <select id="position">
+          <option value="center" selected>center</option>
+          <option value="top left">top left</option>
+          <option value="top right">top right</option>
+          <option value="bottom left">bottom left</option>
+          <option value="bottom right">bottom right</option>
+          <option value="50% 20%">50% 20%</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="preview">Φόντο</div>
+
+    <p class="hint">
+      Αν δεν βλέπεις αλλαγές, έλεγξε για σφάλματα στην κονσόλα (F12 → Console) ή δοκίμασε άλλο URL·
+      μερικά sites μπλοκάρουν hotlinking. Τα <code>picsum.photos</code> URLs συνήθως δουλεύουν.
+    </p>
+  </div>
+
+<script>
+  const preview = document.getElementById('preview');
+  const imgInput = document.getElementById('imageUrl');
+  const sizeSel = document.getElementById('size');
+  const repeatSel = document.getElementById('repeat');
+  const posSel = document.getElementById('position');
+  const btn = document.getElementById('applyBtn');
+  const thumbs = document.getElementById('thumbs');
+
+  function updateBG(){
+    const url = imgInput.value.trim();
+    if (url === '') {
+      // αφαίρεση background αν κενό
+      preview.style.backgroundImage = 'none';
+    } else {
+      preview.style.backgroundImage = `url("${url}")`;
+    }
+    preview.style.backgroundSize = sizeSel.value;
+    preview.style.backgroundRepeat = repeatSel.value;
+    preview.style.backgroundPosition = posSel.value;
+  }
+
+  // Live ενημέρωση
+  imgInput.addEventListener('input', updateBG);
+  [sizeSel, repeatSel, posSel].forEach(el => el.addEventListener('change', updateBG));
+  btn.addEventListener('click', updateBG);
+
+  // Κλικ σε μικρογραφίες
+  thumbs.addEventListener('click', (e)=>{
+    const img = e.target.closest('.thumb')?.querySelector('img');
+    if (!img) return;
+    imgInput.value = img.src; // βάλε το URL της μικρογραφίας
+    updateBG();
+  });
+
+  // αρχική εφαρμογή
+  updateBG();
+</script>
+</body>
+</html>
