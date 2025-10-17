@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Demo: Στυλ Συνδέσμων με Ψευδο-κλάσεις</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    background-color: #f8fafc;
+    padding: 40px;
+  }
+
+  h1 {
+    color: #0f172a;
+  }
+
+  a {
+    font-size: 18px;
+    text-decoration: none;
+    margin-right: 20px;
+  }
+
+  /* 1️⃣ Μη επισκέφθηκε ακόμα (default) */
+  a:link {
+    color: navy;
+  }
+
+  /* 2️⃣ Έχει επισκεφθεί */
+  a:visited {
+    color: purple;
+  }
+
+  /* 3️⃣ Όταν περνάει το ποντίκι από πάνω */
+  a:hover {
+    color: red;
+    text-decoration: underline;
+  }
+
+  /* 4️⃣ Όταν το κουμπί του ποντικιού πατιέται */
+  a:active {
+    color: orange;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎨 Παράδειγμα ψευδο-κλάσεων συνδέσμων</h1>
+
+<p>Πέρασε το ποντίκι ή κάνε κλικ στους παρακάτω συνδέσμους:</p>
+
+<a href="https://www.example.com">Example.com</a>
+<a href="https://www.google.com">Google</a>
+<a href="https://www.wikipedia.org">Wikipedia</a>
+
+<p>📝 <strong>Σημείωση:</strong>  
+Δες πώς αλλάζει το χρώμα ανάλογα με την κατάσταση του κάθε συνδέσμου:
+<ul>
+  <li><b>navy</b> → κανονικός (link)</li>
+  <li><b>purple</b> → έχει επισκεφθεί</li>
+  <li><b>red</b> → όταν περνάς το ποντίκι από πάνω</li>
+  <li><b>orange</b> → την στιγμή του κλικ (active)</li>
+</ul>
+</p>
+
+</body>
+</html>
