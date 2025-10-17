@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Παράδειγμα CSS Transition</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f7f7f7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .button {
+      background-color: #3498db;        /* αρχικό χρώμα */
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 15px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0); /* χωρίς σκιά αρχικά */
+      transition: background-color .24s ease, box-shadow .24s ease; /* ✨ ομαλή μετάβαση */
+    }
+
+    .button:hover {
+      background-color: #1abc9c;        /* νέο χρώμα */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* σκιά κατά το hover */
+    }
+  </style>
+</head>
+<body>
+
+  <button class="button">Πέρασε το ποντίκι!</button>
+
+</body>
+</html>
