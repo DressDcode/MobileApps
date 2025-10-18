@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CSS Filters Demo για Video — v2</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#111827; --muted:#94a3b8; --text:#e5e7eb;
+    --primary:#4f46e5; --primary-2:#6366f1; --accent:#10b981; --danger:#ef4444;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+    background: radial-gradient(1200px 800px at 80% -10%, #1f2937, transparent),
+                radial-gradient(900px 600px at -10% 110%, #1e293b, transparent),
+                var(--bg);
+    color:var(--text);
+  }
+  .wrap{ display:grid; gap:16px; padding:16px; grid-template-columns: 1fr; max-width:1200px; margin:0 auto; }
+  @media (min-width: 980px){ .wrap{ grid-template-columns: 2.2fr 1fr; } }
+  .card{
+    background:color-mix(in oklab, var(--panel) 88%, black 12%);
+    border:1px solid #1f2937; border-radius:16px; box-shadow: 0 10px 30px rgba(0,0,0,.35); overflow:hidden;
+  }
+  .card h2{ margin:0; padding:16px 20px; font-size:18px; border-bottom:1px solid #1f2937; background:#0b1020 }
+  .main{ display:flex; align-items:center; justify-content:center; min-height:60vh; position:relative; }
+  .stage{ width:min(100%,860px); padding:20px; display:flex; flex-direction:column; gap:14px; align-items:center; }
+
+  .video-wrap{
+    position:relative; width:100%; aspect-ratio:16/9;
+    /* ΣΗΜΑΝΤΙΚΟ: να μπορεί να “ξεχειλίσει” το drop-shadow του video */
+    overflow:visible;
+  }
+  .video-frame{
+    width:100%; height:100%; background:#0a0f1c; border-radius:14px;
+    display:grid; place-items:center; border:1px solid #243045;
+    transition: box-shadow .3s ease; box-shadow: 0 12px 30px rgba(0,0,0,.35);
+    position:relative;
+  }
+  video{
+    width:100%; height:100%; object-fit:cover; border-radius:14px;
+    transition: filter .35s ease; display:block;
+    /* το drop-shadow θα μπαίνει ως μέρος του filter εδώ */
+  }
+  /* overlay για backdrop-filter */
+  .frost-overlay{
+    position:absolute; inset:0; border-radius:14px; pointer-events:none;
+    background: rgba(15,23,42,.28); /* λίγο «γυαλί» */
+    display:none;
+  }
+  .frost-on .frost-overlay{
+    display:block;
+    /* Η ΜΑΓΕΙΑ: θολώνει/ρυθμίζει Ο,ΤΙ βρίσκεται πίσω από το overlay */
+    backdrop-filter: blur(12px) saturate(1.2) brightness(1.05) contrast(1.05);
+  }
+
+  .empty{ color:var(--muted); text-align:center; padding:24px; line-height:1.6; position:absolute; inset:0; display:grid; place-items:center; }
+
+  .panel{ padding:16px 16px 20px; display:grid; gap:14px }
+  .group{ display:grid; gap:10px }
+  .row{ display:flex; flex-wrap:wrap; gap:8px }
+  .btn{
+    appearance:none; border:1px solid #2a3450; background:#0f172a; color:var(--text);
+    padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:600;
+    transition: transform .06s ease, background-color .2s ease, border-color .2s ease, box-shadow .2s ease, filter .2s;
+  }
+  .btn:hover{ background:#151f34; box-shadow:0 6px 16px rgba(0,0,0,.25) }
+  .btn:active{ transform:scale(.98) }
+  .btn.primary{ background:linear-gradient(180deg, var(--primary-2), var(--primary)); border-color:transparent }
+  .btn.primary:hover{ filter:brightness(1.07) }
+  .btn.ghost{ background:transparent }
+  .btn.danger{ background:linear-gradient(180deg, #f87171, #ef4444); border-color:transparent }
+  .btn.small{ padding:6px 10px; font-size:13px }
+  .pill{ font-size:12px; padding:6px 10px; border-radius:999px }
+
+  label{ font-size:13px; color:#cbd5e1 }
+  .control{ display:grid; gap:6px }
+  .control input[type="range"]{ width:100% }
+  .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px }
+  .code{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    font-size:12px; background:#0a0f1c; color:#c7d2fe; padding:10px 12px; border-radius:10px; border:1px solid #22314d;
+    word-break: break-all; white-space: pre-wrap; min-height:40px;
+  }
+  .switch{ display:inline-flex; align-items:center; gap:8px; border:1px solid #2a3450; padding:6px 10px; border-radius:999px; background:#0f172a; }
+  .switch input{ accent-color:var(--primary) }
+  .footer{
+    display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 16px; border-top:1px solid #1f2937; background:#0b1020;
+  }
+  .tip{ color:var(--muted); }
+  .preset-desc{ color:#c7d2fe; font-size:13px; }
+  .presets .btn{ border-color:#2a3450 }
+  .presets .btn.is-active{ background:linear-gradient(180deg, var(--primary-2), var(--primary)); border-color:transparent }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Αριστερά: Σκηνή βίντεο -->
+    <section class="card">
+      <h2>Σκηνή Προεπισκόπησης</h2>
+      <div class="main">
+        <div class="stage">
+          <div class="video-wrap">
+            <div class="video-frame" id="frame">
+              <video id="vid" controls crossorigin="anonymous" preload="metadata" aria-label="Δείγμα βίντεο με φίλτρα"></video>
+              <div class="frost-overlay" id="frost"></div>
+              <div class="empty" id="placeholder" aria-hidden="true">
+                Δεν έχει φορτωθεί βίντεο ακόμη.<br/> Πάτησε <strong>«Φόρτωσε βίντεο»</strong> από τα δεξιά για να διαλέξεις ένα αρχείο (π.χ. MP4).
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="justify-content:space-between; width:100%">
+            <div class="row">
+              <button class="btn small" id="btnPlay">▶ Παίξε / Παύση</button>
+              <button class="btn small ghost" id="btnMute">🔇 Σίγαση</button>
+            </div>
+            <div class="row">
+              <button class="btn small" id="btnCopy">📋 Copy CSS</button>
+              <button class="btn small danger" id="btnReset">⟲ Επαναφορά</button>
+            </div>
+          </div>
+          <div class="code" id="cssOut">filter: none;</div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="tip" id="presetTip">Συμβουλή: Τα φίλτρα εφαρμόζονται αλυσιδωτά (από αριστερά προς τα δεξιά).</div>
+        <div><span class="pill" style="background:#1e293b;border:1px solid #314158">CSS Filters • Video</span></div>
+      </div>
+    </section>
+
+    <!-- Δεξιά: Πίνακας ελέγχου -->
+    <aside class="card">
+      <h2>Πίνακας Ελέγχου</h2>
+      <div class="panel">
+        <div class="group">
+          <div class="row">
+            <input type="file" id="file" accept="video/*" />
+            <button class="btn" id="btnSample">Φόρτωσε demo stream</button>
+          </div>
+          <small class="tip">Tip: Μπορείς να σύρεις &amp; αφήσεις ένα βίντεο πάνω στην προεπισκόπηση.</small>
+        </div>
+
+        <div class="group presets">
+          <label><strong>Presets (γρήγορα στυλ)</strong></label>
+          <div class="row" id="presetRow">
+            <button class="btn pill" data-preset="normal">Normal</button>
+            <button class="btn pill" data-preset="vivid">Vivid</button>
+            <button class="btn pill" data-preset="noir">Noir</button>
+            <button class="btn pill" data-preset="sepia">Sepia</button>
+            <button class="btn pill" data-preset="retro">Retro</button>
+            <button class="btn pill" data-preset="dreamy">Dreamy</button>
+            <button class="btn pill" data-preset="highcontrast">High Contrast</button>
+            <button class="btn pill" data-preset="invert">Invert</button>
+          </div>
+          <div class="preset-desc" id="presetDesc">—</div>
+        </div>
+
+        <div class="group grid-2">
+          <div class="control">
+            <label for="brightness">brightness <span id="vBrightness">1.00</span></label>
+            <input type="range" id="brightness" min="0" max="2" step="0.01" value="1">
+          </div>
+          <div class="control">
+            <label for="contrast">contrast <span id="vContrast">1.00</span></label>
+            <input type="range" id="contrast" min="0" max="2" step="0.01" value="1">
+          </div>
+          <div class="control">
+            <label for="saturate">saturate <span id="vSaturate">1.00</span></label>
+            <input type="range" id="saturate" min="0" max="3" step="0.01" value="1">
+          </div>
+          <div class="control">
+            <label for="blur">blur(px) <span id="vBlur">0</span></label>
+            <input type="range" id="blur" min="0" max="20" step="1" value="0">
+          </div>
+          <div class="control">
+            <label for="hue">hue-rotate(°) <span id="vHue">0</span></label>
+            <input type="range" id="hue" min="0" max="360" step="1" value="0">
+          </div>
+          <div class="control">
+            <label for="opacity">opacity <span id="vOpacity">1.00</span></label>
+            <input type="range" id="opacity" min="0" max="1" step="0.01" value="1">
+          </div>
+        </div>
+
+        <div class="group">
+          <label><strong>Δυαδικά εφέ</strong></label>
+          <div class="row">
+            <label class="switch"><input type="checkbox" id="grayscale"> <span>grayscale</span></label>
+            <label class="switch"><input type="checkbox" id="sepia"> <span>sepia</span></label>
+            <label class="switch"><input type="checkbox" id="invert"> <span>invert</span></label>
+          </div>
+        </div>
+
+        <div class="group">
+          <label><strong>Εφέ περιγράμματος με `drop-shadow()`</strong></label>
+          <div class="row">
+            <label class="switch"><input type="checkbox" id="dropshadow"> <span>enable drop-shadow</span></label>
+            <select id="shadowPreset" class="btn ghost">
+              <option value="mild">Mild</option>
+              <option value="soft" selected>Soft</option>
+              <option value="strong">Strong</option>
+              <option value="glow">Glow</option>
+            </select>
+          </div>
+          
+        </div>
+
+        <div class="group">
+          <label><strong>Backdrop filter (frosted glass πάνω από το video)</strong></label>
+          <div class="row">
+            <label class="switch"><input type="checkbox" id="backdrop"> <span>enable backdrop-filter</span></label>
+          </div>
+          
+          
+        </div>
+      </div>
+    </aside>
+  </div>
+
+<script>
+(() => {
+  const vid = document.getElementById('vid');
+  const frame = document.getElementById('frame');
+  const frost = document.getElementById('frost');
+  const placeholder = document.getElementById('placeholder');
+  const cssOut = document.getElementById('cssOut');
+  const presetDesc = document.getElementById('presetDesc');
+  const presetTip = document.getElementById('presetTip');
+
+  const sliders = {
+    brightness: document.getElementById('brightness'),
+    contrast  : document.getElementById('contrast'),
+    saturate  : document.getElementById('saturate'),
+    blur      : document.getElementById('blur'),
+    hue       : document.getElementById('hue'),
+    opacity   : document.getElementById('opacity'),
+  };
+  const labels = {
+    brightness: document.getElementById('vBrightness'),
+    contrast  : document.getElementById('vContrast'),
+    saturate  : document.getElementById('vSaturate'),
+    blur      : document.getElementById('vBlur'),
+    hue       : document.getElementById('vHue'),
+    opacity   : document.getElementById('vOpacity'),
+  };
+  const toggles = {
+    grayscale : document.getElementById('grayscale'),
+    sepia     : document.getElementById('sepia'),
+    invert    : document.getElementById('invert'),
+    dropshadow: document.getElementById('dropshadow'),
+    backdrop  : document.getElementById('backdrop'),
+  };
+  const shadowPreset = document.getElementById('shadowPreset');
+
+  const btnsPreset = [...document.querySelectorAll('[data-preset]')];
+  const presetRow = document.getElementById('presetRow');
+  const btnReset   = document.getElementById('btnReset');
+  const btnCopy    = document.getElementById('btnCopy');
+  const btnPlay    = document.getElementById('btnPlay');
+  const btnMute    = document.getElementById('btnMute');
+  const inputFile  = document.getElementById('file');
+  const btnSample  = document.getElementById('btnSample');
+
+  const PRESET_TEXT = {
+    normal: "Καμία ενίσχυση. Όλα στο 1.0 — baseline εμφάνιση.",
+    vivid: "Ζωντανά χρώματα: +brightness, +contrast, +saturate και απαλή σκιά.",
+    noir: "Ασπρόμαυρο με ανεβασμένη αντίθεση (dramatic B/W).",
+    sepia: "Καφέ τόνος παλαιότητας, ελαφρά φωτεινότητα/κορεσμός.",
+    retro: "Ήπιο blur, θερμή απόχρωση (hue 35°), ελαφρύ fade.",
+    dreamy: "Μεγαλύτερο blur, ψυχρή απόχρωση, glow drop-shadow.",
+    highcontrast: "Πολύ υψηλή αντίθεση για έντονη εικόνα.",
+    invert: "Αντιστροφή χρωμάτων + hue-rotate 180° για εφέ αρνητικού."
+  };
+
+  function setActivePresetButton(name){
+    btnsPreset.forEach(b => b.classList.toggle('is-active', b.dataset.preset === name));
+  }
+
+  function updateLabels(){
+    labels.brightness.textContent = Number(sliders.brightness.value).toFixed(2);
+    labels.contrast.textContent   = Number(sliders.contrast.value).toFixed(2);
+    labels.saturate.textContent   = Number(sliders.saturate.value).toFixed(2);
+    labels.blur.textContent       = sliders.blur.value;
+    labels.hue.textContent        = sliders.hue.value;
+    labels.opacity.textContent    = Number(sliders.opacity.value).toFixed(2);
+  }
+
+  function buildFilter(){
+    const parts = [];
+    if (toggles.grayscale.checked) parts.push(`grayscale(1)`);
+    if (toggles.sepia.checked)     parts.push(`sepia(1)`);
+    if (toggles.invert.checked)    parts.push(`invert(1)`);
+
+    const b = +sliders.brightness.value;
+    const c = +sliders.contrast.value;
+    const s = +sliders.saturate.value;
+    const h = +sliders.hue.value;
+    const bl= +sliders.blur.value;
+    const o = +sliders.opacity.value;
+
+    if (b !== 1) parts.push(`brightness(${b})`);
+    if (c !== 1) parts.push(`contrast(${c})`);
+    if (s !== 1) parts.push(`saturate(${s})`);
+    if (h !== 0) parts.push(`hue-rotate(${h}deg)`);
+    if (bl!== 0) parts.push(`blur(${bl}px)`);
+    if (o !== 1) parts.push(`opacity(${o})`);
+
+    if (toggles.dropshadow.checked){
+      const d = {
+        mild  : 'drop-shadow(0 2px 6px rgba(0,0,0,.25))',
+        soft  : 'drop-shadow(0 6px 16px rgba(0,0,0,.35))',
+        strong: 'drop-shadow(0 10px 28px rgba(0,0,0,.5))',
+        glow  : 'drop-shadow(0 0 18px rgba(99,102,241,.65))'
+      }[shadowPreset.value] || '';
+      if (d) parts.push(d);
+    }
+    return parts.length ? parts.join(' ') : 'none';
+  }
+
+  function apply(){
+    updateLabels();
+    const filterStr = buildFilter();
+    vid.style.filter = filterStr;
+    cssOut.textContent = `filter: ${filterStr};`;
+    // Backdrop overlay toggle (class on frame)
+    frame.classList.toggle('frost-on', toggles.backdrop.checked);
+  }
+
+  function loadFile(file){
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    vid.src = url;
+    vid.play().catch(()=>{ /* ignored */ });
+    placeholder.style.display = 'none';
+  }
+
+  // Drag & drop
+  const videoWrap = document.querySelector('.video-wrap');
+  videoWrap.addEventListener('dragover', e => { e.preventDefault(); frame.style.outline = '2px dashed #4f46e5'; });
+  videoWrap.addEventListener('dragleave', () => { frame.style.outline = 'none'; });
+  videoWrap.addEventListener('drop', e => {
+    e.preventDefault(); frame.style.outline = 'none';
+    const file = e.dataTransfer.files?.[0];
+    loadFile(file);
+  });
+
+  // File input
+  inputFile.addEventListener('change', e => loadFile(e.target.files?.[0]));
+
+  // Sample stream
+  btnSample.addEventListener('click', () => {
+    vid.src = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+    vid.play().catch(()=>{});
+    placeholder.style.display = 'none';
+  });
+
+  // Sliders / toggles
+  Object.values(sliders).forEach(sl => sl.addEventListener('input', apply));
+  Object.values(toggles).forEach(tg => tg.addEventListener('change', apply));
+  shadowPreset.addEventListener('change', apply);
+
+  // Presets
+  const applyPreset = (name) => {
+    const map = {
+      normal:      { br:1, ct:1, sa:1, bl:0, hue:0,   op:1, gs:0, sp:0,  inv:0, ds:0, dsv:'soft', tip: PRESET_TEXT.normal },
+      vivid:       { br:1.1, ct:1.15, sa:1.35, bl:0,  hue:10,  op:1, gs:0, sp:0,  inv:0, ds:1, dsv:'soft', tip: PRESET_TEXT.vivid },
+      noir:        { br:1.05, ct:1.3, sa:0,   bl:0,   hue:0,   op:1, gs:1, sp:0,  inv:0, ds:0, dsv:'soft', tip: PRESET_TEXT.noir },
+      sepia:       { br:1.05, ct:1.1, sa:1.1, bl:0,   hue:0,   op:1, gs:0, sp:1,  inv:0, ds:0, dsv:'soft', tip: PRESET_TEXT.sepia },
+      retro:       { br:1.1, ct:1.05, sa:1.2, bl:1,   hue:35,  op:0.98, gs:0, sp:0.4, inv:0, ds:0, dsv:'mild', tip: PRESET_TEXT.retro },
+      dreamy:      { br:1.08, ct:1,   sa:1.1, bl:6,   hue:330, op:1, gs:0, sp:0,  inv:0, ds:1, dsv:'glow', tip: PRESET_TEXT.dreamy },
+      highcontrast:{ br:1,   ct:1.5, sa:1,   bl:0,   hue:0,   op:1, gs:0, sp:0,  inv:0, ds:0, dsv:'strong', tip: PRESET_TEXT.highcontrast },
+      invert:      { br:1,   ct:1,   sa:1,   bl:0,   hue:180, op:1, gs:0, sp:0,  inv:1, ds:0, dsv:'soft', tip: PRESET_TEXT.invert },
+    }[name];
+
+    if (!map) return;
+
+    sliders.brightness.value = map.br;
+    sliders.contrast.value   = map.ct;
+    sliders.saturate.value   = map.sa;
+    sliders.blur.value       = map.bl;
+    sliders.hue.value        = map.hue;
+    sliders.opacity.value    = map.op;
+    toggles.grayscale.checked= !!map.gs;
+    toggles.sepia.checked    = !!map.sp && map.sp >= 1;
+    toggles.invert.checked   = !!map.inv;
+    toggles.dropshadow.checked = !!map.ds;
+    shadowPreset.value = map.dsv;
+
+    setActivePresetButton(name);
+    presetDesc.textContent = map.tip;
+    apply();
+  };
+
+  btnsPreset.forEach(b => b.addEventListener('click', () => applyPreset(b.dataset.preset)));
+
+  // Reset
+  btnReset.addEventListener('click', () => applyPreset('normal'));
+
+  // Copy CSS
+  btnCopy.addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(cssOut.textContent.trim());
+      btnCopy.textContent = '✅ Copied!';
+      setTimeout(() => btnCopy.textContent = '📋 Copy CSS', 1200);
+    }catch{
+      alert('Δεν ήταν δυνατή η αντιγραφή. Αντέγραψε χειροκίνητα από το πλαίσιο.');
+    }
+  });
+
+  // Play / Pause
+  btnPlay.addEventListener('click', async () => {
+    if (vid.paused) { try{ await vid.play(); }catch{} }
+    else vid.pause();
+  });
+  // Mute
+  btnMute.addEventListener('click', () => {
+    vid.muted = !vid.muted;
+    btnMute.textContent = vid.muted ? '🔊 Ήχος' : '🔇 Σίγαση';
+  });
+
+  // Αρχικοποίηση
+  applyPreset('normal');
+  vid.addEventListener('play', () => { placeholder.style.display = 'none'; });
+})();
+</script>
+</body>
+</html>
