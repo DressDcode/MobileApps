@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <title>Demo: Κάρτες πολυμέσων με CSS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* ====== ΒΑΣΙΚΑ ====== */
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #f2f4f7;
+      color: #1f2937;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin: 24px 0 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    /* ====== ΛΙΣΤΑ ΚΑΡΤΩΝ (στοίχιση σε στήλη, χωρίς προχωρημένο layout) ====== */
+    .cards {
+      width: 560px;            /* σταθερό πλάτος για απλό demo */
+      margin: 0 auto 48px;     /* κεντράρισμα */
+    }
+
+    /* ====== ΚΑΡΤΑ ====== */
+    .media-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      padding: 16px;
+      margin: 16px 0;
+    }
+
+    .media-card h3 {
+      font-size: 18px;
+      margin: 12px 0 6px;
+      color: #0f172a;
+    }
+
+    .media-card p {
+      margin: 6px 0 0;
+      color: #475569;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+    /* ====== ΣΤΟΧΕΥΣΗ ΜΟΝΟ ΤΩΝ <video> ΜΕΣΑ ΣΤΗΝ ΚΑΡΤΑ ====== */
+    .media-card video {
+      /* Εμφάνιση κουτιού βίντεο */
+      display: block;              /* για να κεντράρεται με margin */
+      width: 528px;                /* 528 = 560 κάρτα - 2*16 padding */
+      height: 297px;               /* ~16:9 για καθαρό demo (π.χ. 528x297) */
+      margin: 0 auto;              /* κεντράρισμα μέσα στην κάρτα */
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: #000;            /* ώστε το frame να είναι “μαύρο” πριν φορτώσει */
+    }
+
+    /* Προαιρετικό ελαφρύ εφέ στο hover, για να φαίνεται “ζωντανό” */
+    .media-card video:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    /* Μικρό footer σημείωσης */
+    .note {
+      text-align: center;
+      color: #6b7280;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Κάρτες πολυμέσων με CSS</h1>
+  
+  <section class="cards">
+    <!-- ΚΑΡΤΑ 1 -->
+    <article class="media-card">
+      <!-- Μπορείς να προσθέσεις poster="teaser-poster.jpg" αν έχεις εικόνα αφίσας -->
+      <video src="teaser.mp4" controls></video>
+      <h3>Teaser Παρουσίασης</h3>
+      <p>Σύντομο δείγμα από το υλικό του μαθήματος. Παρατήρησε το πλαίσιο, τις στρογγυλές γωνίες και τη σκιά.</p>
+    </article>
+
+    <!-- ΚΑΡΤΑ 2 -->
+    <article class="media-card">
+      <video src="intro.mp4" controls></video>
+      <h3>Εισαγωγή στο Θέμα</h3>
+      <p>Εδώ δίνουμε μια μικρή εισαγωγή. Το styling εφαρμόζεται μόνο στα &lt;video&gt; μέσα σε κάρτες (.media-card video).</p>
+    </article>
+
+    <!-- ΚΑΡΤΑ 3 -->
+    <article class="media-card">
+      <video src="behind.mp4" controls></video>
+      <h3>Behind the Scenes</h3>
+      <p>Παράδειγμα τρίτου βίντεο μέσα στην ίδια αισθητική “κάρτας”. Τα υπόλοιπα βίντεο εκτός κάρτας δεν επηρεάζονται.</p>
+    </article>
+   
+  </section>
+
+</body>
+</html>
