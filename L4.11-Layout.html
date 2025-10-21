@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Float & BFC Demo: χωρίς / clearfix / overflow:auto / flow-root</title>
+<style>
+  :root{
+    --bg:#0f172a; --card:#111827; --muted:#9ca3af; --text:#e5e7eb;
+    --accent:#60a5fa; --warn:#fca5a5; --ok:#86efac;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background: var(--bg); color:var(--text); padding:24px;
+  }
+  h1{ margin:0 0 16px; font-size:22px }
+  .grid{
+    display:grid; gap:16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px){ .grid{ grid-template-columns: repeat(2, 1fr); } }
+
+  .card{
+    background: var(--card);
+    border:1px solid #1f2937;
+    border-radius:14px;
+    padding:14px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  }
+  .title{
+    font-weight:700; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .badge{ font-size:12px; padding:3px 8px; border-radius:999px; border:1px solid #2a334a; background:#0b1220; color:var(--muted) }
+
+  /* Το DEMO container που θέλουμε να “αγκαλιάζει” το float */
+  .demo{
+    border:2px dashed #334155;                  /* περίγραμμα για να βλέπουμε τα όρια */
+    background: rgba(96,165,250,.12);           /* ελαφρύ μπλε για το ύψος */
+    padding:10px;
+    margin-top:8px;
+    min-height:40px;
+  }
+
+  /* Η εικόνα που έχει float */
+  .demo img{
+    float:left;
+    margin:0 10px 6px 0;
+    width:150px; height:110px; object-fit:cover; border-radius:8px;
+    border:2px solid rgba(255,255,255,.2);
+  }
+
+  /* clearfix εκδοχή */
+  .clearfix::after{
+    content:"";
+    display:block;
+    clear:both;
+  }
+
+  /* overflow εκδοχή */
+  .overflow-auto{ overflow:auto; }
+
+  /* flow-root εκδοχή */
+  .flow-root{ display: flow-root; }
+
+  /* Κείμενο */
+  p{ line-height:1.45; margin:0 0 8px }
+
+  /* Μικρός οδηγός κάτω από κάθε κάρτα */
+  .notes{ font-size:13px; color:var(--muted); margin-top:8px }
+  .ok{ color: var(--ok) }
+  .warn{ color: var(--warn) }
+</style>
+</head>
+<body>
+  <h1>Float & BFC σύγκριση: χωρίς / clearfix / overflow:auto / flow-root</h1>
+
+  <div class="grid">
+    <!-- 1) Χωρίς τίποτα -->
+    <section class="card">
+      <div class="title">
+        <div>1) Χωρίς “διόρθωση”</div>
+        <span class="badge">container ΔΕΝ μετράει το float</span>
+      </div>
+      <div class="demo">
+        <img src="https://picsum.photos/seed/a/220/160" alt="εικόνα">
+        <p>Η εικόνα έχει <code>float:left;</code>. Παρατήρησε ότι το γαλάζιο φόντο (ύψος container)
+        συχνά δεν “αγκαλιάζει” την εικόνα αν δεν υπάρχει αρκετό περιεχόμενο.</p>
+        <p>Αν το κείμενο είναι λίγο, το περίγραμμα δείχνει ότι το container “καταρρέει”.</p>
+      </div>
+      <div class="notes warn">Χωρίς BFC ή clearfix, το float δεν συμβάλλει στο ύψος του container.</div>
+    </section>
+
+    <!-- 2) Με clearfix -->
+    <section class="card">
+      <div class="title">
+        <div>2) Με <code>.clearfix</code></div>
+        <span class="badge">pseudo-element + clear</span>
+      </div>
+      <div class="demo clearfix">
+        <img src="https://picsum.photos/seed/b/220/160" alt="εικόνα">
+        <p>Το container έχει <code>.clearfix</code>, άρα δημιουργεί “καθαρισμό” μετά το περιεχόμενο,
+        με αποτέλεσμα να υπολογίζεται σωστά το ύψος.</p>
+        <p>Κλασική, πολύ συμβατή λύση.</p>
+      </div>
+      <div class="notes ok">Το φόντο “αγκαλιάζει” την εικόνα. Καμία κατάρρευση ύψους.</div>
+    </section>
+
+    <!-- 3) Με overflow:auto -->
+    <section class="card">
+      <div class="title">
+        <div>3) Με <code>overflow:auto</code></div>
+        <span class="badge">δημιουργεί BFC</span>
+      </div>
+      <div class="demo overflow-auto">
+        <img src="https://picsum.photos/seed/c/220/160" alt="εικόνα">
+        <p>Θέτοντας <code>overflow:auto</code> στο container, δημιουργείται Block Formatting Context.</p>
+        <p>Το container πλέον “βλέπει” το floated παιδί και παίρνει το σωστό ύψος.</p>
+      </div>
+      <div class="notes ok">Γρήγορη λύση, αλλά μπορεί να εμφανίσει scrollbars αν υπάρξει πραγματικό overflow.</div>
+    </section>
+
+    <!-- 4) Με display: flow-root -->
+    <section class="card">
+      <div class="title">
+        <div>4) Με <code>display: flow-root</code></div>
+        <span class="badge">μοντέρνα καθαρή λύση (BFC)</span>
+      </div>
+      <div class="demo flow-root">
+        <img src="https://picsum.photos/seed/d/220/160" alt="εικόνα">
+        <p><code>display: flow-root</code> δημιουργεί BFC χωρίς pseudo-elements και χωρίς side-effects
+        από overflow. Είναι η πιο “καθαρή” σύγχρονη λύση.</p>
+      </div>
+      <div class="notes ok">Συνιστάται σε νέα layouts όπου υποστηρίζονται σύγχρονοι browsers.</div>
+    </section>
+  </div>
+</body>
+</html>
