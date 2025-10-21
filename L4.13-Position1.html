@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CSS position: static • relative • absolute • fixed • sticky</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#111827; --muted:#9ca3af; --text:#e5e7eb;
+    --accent:#60a5fa; --good:#86efac; --warn:#fca5a5;
+  }
+  *{box-sizing:border-box}
+  body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); }
+  .wrap{ max-width:1000px; margin:0 auto; padding:20px; display:grid; gap:16px }
+  .card{ background:var(--panel); border:1px solid #1f2937; border-radius:14px; box-shadow:0 10px 24px rgba(0,0,0,.35); overflow:hidden }
+  .head{ display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid #1f2937 }
+  .head h1{ margin:0; font-size:18px }
+  .controls{ display:flex; flex-wrap:wrap; gap:8px }
+  .btn{
+    appearance:none; border:1px solid #2a334a; background:#0b1220; color:var(--text);
+    padding:6px 10px; border-radius:10px; cursor:pointer; font-weight:600;
+  }
+  .btn.is-active{ background:linear-gradient(180deg,#6ea8ff,#4f83ff); border-color:transparent }
+  .hint{ color:var(--muted); padding:10px 16px; border-bottom:1px solid #1f2937 }
+  .content{ padding:16px; display:grid; gap:12px }
+
+  /* Περιοχή επίδειξης με scroll ώστε να φαίνεται το fixed/sticky */
+  .stage{
+    display:grid; grid-template-columns: 1fr 320px; gap:16px;
+  }
+  @media (max-width: 840px){ .stage{ grid-template-columns: 1fr; } }
+
+  .scroller{
+    height: 340px; overflow:auto; border:1px dashed #334155; border-radius:10px;
+    background: rgba(96,165,250,.07);
+    padding:14px; position:relative;
+  }
+
+  /* Γονέας για absolute/relative παίχτη */
+  .parent{
+    position: relative; /* ορίζει το πλαίσιο για absolute */
+    background:#0b1220; border:1px solid #243145; border-radius:12px;
+    padding:16px; height: 240px; margin-bottom:16px;
+  }
+  .parent-title{ color:#cbd5e1; margin-bottom:8px; font-size:14px }
+
+  .player{
+    width:160px; height:80px; background:#60a5fa; color:#082f49;
+    display:flex; align-items:center; justify-content:center; font-weight:800;
+    border-radius:10px; border:2px solid rgba(255,255,255,.3);
+    /* default */
+    position: static;
+  }
+
+  /* Θέσεις που θα εναλλάσσονται */
+  .pos-relative   { position: relative; top: 12px; left: 12px; }
+  .pos-absolute   { position: absolute; top: 16px; right: 16px; }
+  .pos-fixed      { position: fixed; top: 10px; right: 10px; z-index: 9999; }
+  .pos-sticky     { position: sticky; top: 10px; }
+
+  /* Κείμενο για γέμισμα scroll */
+  .para{ color:#e5e7eb; line-height:1.55; margin:0 0 10px }
+  .badge{ font-size:12px; padding:3px 8px; border-radius:999px; border:1px solid #2a334a; background:#0b1220; color:var(--muted) }
+  .note{ font-size:13px; color:var(--muted) }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <div class="head">
+        <h1>Επίδειξη <code>position</code>: static • relative • absolute • fixed • sticky</h1>
+        <div class="controls" id="controls">
+          <button class="btn is-active" data-pos="static">static</button>
+          <button class="btn" data-pos="relative">relative</button>
+          <button class="btn" data-pos="absolute">absolute</button>
+          <button class="btn" data-pos="fixed">fixed</button>
+          <button class="btn" data-pos="sticky">sticky</button>
+        </div>
+      </div>
+      <div class="hint" id="hint">Επίλεξε μία τιμή για να δεις τη συμπεριφορά. Κύλιση στην αριστερή στήλη: φαίνεται το fixed/sticky.</div>
+
+      <div class="content stage">
+        <!-- Αριστερά: scroller για να φανεί το sticky/fixed -->
+        <div class="scroller" id="scroller">
+          <div class="parent" id="parent">
+            <div class="parent-title">Γονέας (position: relative)</div>
+            <div class="player" id="player">BOX</div>
+            <div class="note">Σημ.: Για <b>absolute</b>, ο γονέας δίνει το πλαίσιο αναφοράς (λόγω <code>position: relative</code>).</div>
+          </div>
+
+          <!-- Κείμενο ώστε να υπάρχει κύλιση -->
+          <p class="para">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ornare, nisl sed gravida luctus, lacus sapien pulvinar mi, ac malesuada massa lacus vel nunc.</p>
+          <p class="para">Praesent ullamcorper, nunc in sodales tristique, nunc turpis mollis lacus, a viverra urna est ac est. Aenean varius bibendum felis at tempor.</p>
+          <p class="para">Suspendisse potenti. Sed a mi a eros egestas tincidunt. Donec ligula nulla, dictum vel justo sit amet, placerat rhoncus arcu.</p>
+          <p class="para">Curabitur quis interdum massa. Integer convallis leo a dui sodales, non venenatis massa sollicitudin. Nunc at vehicula urna.</p>
+          <p class="para">Aliquam erat volutpat. Nullam id dui ac sem maximus consequat. Proin id rhoncus turpis, ac lacinia risus.</p>
+          <p class="para">Duis eget lorem a ex posuere efficitur. Nunc blandit convallis ante, sed sodales quam congue ac. Sed porta facilisis aliquam.</p>
+          <p class="para">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+        </div>
+
+        <!-- Δεξιά: Μικρές σημειώσεις -->
+        <aside>
+          <p class="badge">Τι να προσέξεις</p>
+          <ul class="note">
+            <li><b>static</b>: το κουτί ρέει κανονικά μέσα στον γονέα.</li>
+            <li><b>relative</b>: φαίνεται μετατοπισμένο με <code>top/left</code> αλλά κρατά τη θέση του στη ροή.</li>
+            <li><b>absolute</b>: βγαίνει από τη ροή και στοιχίζεται ως προς τον πλησιέστερο “positioned” πρόγονο (εδώ: τον γονέα).</li>
+            <li><b>fixed</b>: αγκυρώνεται στο <i>παράθυρο</i> — δες ότι δεν κινείται όταν κάνεις scroll.</li>
+            <li><b>sticky</b>: κινείται σαν relative μέχρι να φτάσει το <code>top</code>, μετά “κολλάει” όσο κάνεις scroll μέσα στον scroller.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+<script>
+(() => {
+  const player = document.getElementById('player');
+  const parent = document.getElementById('parent');
+  const controls = document.getElementById('controls');
+  const hint = document.getElementById('hint');
+
+  const DESCR = {
+    static : 'static → Κανονική ροή. Αγνοεί top/left/right/bottom.',
+    relative: 'relative → Κρατά χώρο στη ροή, αλλά μετατοπίζεται οπτικά (π.χ. top:12px, left:12px). Γίνεται πλαίσιο για absolute παιδιά.',
+    absolute: 'absolute → Βγαίνει από τη ροή. Τοποθετείται ως προς τον γονέα (positioned ancestor): top:16px, right:16px.',
+    fixed   : 'fixed → Αγκυρώνεται στο viewport (πάνω δεξιά). Δεν κινείται όσο κάνεις scroll.',
+    sticky  : 'sticky → Συμπεριφέρεται σαν relative ως το top:10px, μετά “κολλάει” στην κορυφή του scroller.'
+  };
+
+  function setPos(name){
+    // καθάρισε όλες τις κλάσεις θέσης
+    player.className = 'player';
+    // πρόσθεσε τη νέα
+    if (name === 'relative') player.classList.add('pos-relative');
+    if (name === 'absolute') player.classList.add('pos-absolute');
+    if (name === 'fixed')    player.classList.add('pos-fixed');
+    if (name === 'sticky')   player.classList.add('pos-sticky');
+    // static = default (χωρίς extra κλάση)
+
+    // ενεργό κουμπί UI
+    [...controls.querySelectorAll('.btn')].forEach(b => b.classList.toggle('is-active', b.dataset.pos===name));
+
+    // περιγραφή
+    hint.textContent = DESCR[name] || '';
+  }
+
+  // αρχική τιμή
+  setPos('static');
+
+  // events στα κουμπιά
+  controls.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-pos]');
+    if (!btn) return;
+    setPos(btn.dataset.pos);
+  });
+})();
+</script>
+</body>
+</html>
