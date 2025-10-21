@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<title>Παράδειγμα position: relative & absolute</title>
+<style>
+  /* Στυλ για το κουτί γονέα */
+  .box {
+    position: relative;          /* Δημιουργεί “πλαίσιο αναφοράς” */
+    background: #e0f7fa;         /* Γαλάζιο φόντο */
+    width: 300px;
+    height: 150px;
+    margin: 40px auto;           /* Κεντράρισμα στη σελίδα */
+    border: 2px solid #0097a7;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    padding: 10px;
+  }
+
+  /* Στυλ για το εσωτερικό κουτί */
+  .inner {
+    position: absolute;          /* Τοποθετείται απόλυτα μέσα στο .box */
+    top: 20px;                   /* Απόσταση 20px από το πάνω μέρος του .box */
+    right: 20px;                 /* Απόσταση 20px από τη δεξιά πλευρά του .box */
+    background: #4dd0e1;
+    padding: 5px 10px;
+    border: 1px solid #006064;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="box">
+    Κουτί γονέας
+    <div class="inner">Εσωτερικό κουτί</div>
+  </div>
+
+</body>
+</html>
