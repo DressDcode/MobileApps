@@ -30,16 +30,14 @@
   <div class="grid">
     <div class="card">
       <h2 style="margin-top:0">1) &lt;video&gt; με πολλαπλές <code>&lt;source&gt;</code>, <code>&lt;track&gt;</code> και fallback</h2>
-      <video id="player" crossorigin="anonymous" preload="metadata" poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='720'%3E%3Crect fill='%23000' width='100%25' height='100%25'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%23fff' font-size='42'%3EVideo Poster%3C/text%3E%3C/svg%3E">
-        <!-- Πολλαπλές πηγές: ο browser θα επιλέξει την πρώτη που υποστηρίζει -->
-        <source src="example.webm" type="video/webm" />
-        <source src="example.mp4"  type="video/mp4" />
-        <!-- Υπότιτλοι/λεζάντες μέσω <track>; το src μπαίνει δυναμικά από JS (Blob WebVTT) -->
-        <track id="track-el" kind="subtitles" srclang="el" label="Ελληνικά" default>
-        <!-- Fallback περιεχόμενο αν δεν υποστηρίζεται το video -->
-        Το πρόγραμμα περιήγησής σας δεν υποστηρίζει το στοιχείο <code>&lt;video&gt;</code>.
-        <a href="example.mp4" download>Κατεβάστε το αρχείο</a>.
-      </video>
+     <video id="player" crossorigin="anonymous" preload="metadata"
+       poster="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/800px-Image_created_with_a_mobile_phone.png">
+		<source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+		<source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.webm" type="video/webm">
+		<track id="track-el" kind="subtitles" srclang="el" label="Ελληνικά" default>
+		Το πρόγραμμα περιήγησής σας δεν υποστηρίζει το στοιχείο <code>&lt;video&gt;</code>.
+		<a href="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" download>Κατεβάστε το αρχείο</a>.
+	 </video>
 
       <div class="native-toggle small">
         <label><input id="toggleNative" type="checkbox" checked> Εμφάνιση ενσωματωμένων controls του browser</label>
