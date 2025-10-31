@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Flow Control σε Πραγματική Σελίδα</title>
+</head>
+<body>
+  <h2>Έλεγχος τιμής προϊόντος (if / else if)</h2>
+  <input id="price" type="number" placeholder="π.χ. 130">
+  <button onclick="checkPrice()">Έλεγχος</button>
+  <p id="priceMsg"></p>
+
+  <h2>Μήνυμα ανά ημέρα (switch)</h2>
+  <select id="day" onchange="showDayMsg()">
+    <option>Δευτέρα</option>
+    <option>Παρασκευή</option>
+    <option>Κυριακή</option>
+    <option>Άλλη</option>
+  </select>
+  <p id="dayMsg"></p>
+
+  <h2>Λίστα με for</h2>
+  <button onclick="showStudents()">Δείξε φοιτητές</button>
+  <ul id="students"></ul>
+
+  <script>
+    function checkPrice() {
+      const price = Number(document.getElementById("price").value);
+      const out = document.getElementById("priceMsg");
+
+      if (price > 200) out.textContent = "Ακριβό προϊόν!";
+      else if (price > 100) out.textContent = "Μεσαίας κατηγορίας.";
+      else if (price > 0) out.textContent = "Οικονομικό.";
+      else out.textContent = "Μη έγκυρη τιμή.";
+    }
+
+    function showDayMsg() {
+      const day = document.getElementById("day").value;
+      const out = document.getElementById("dayMsg");
+      switch (day) {
+        case "Δευτέρα": out.textContent = "Καλή αρχή!"; break;
+        case "Παρασκευή": out.textContent = "Καλό ΣΚ!"; break;
+        case "Κυριακή": out.textContent = "Ξεκουράσου!"; break;
+        default: out.textContent = "Καλή συνέχεια!";
+      }
+    }
+
+    function showStudents() {
+      const names = ["Eleni", "Nikos", "Maria", "Anna"];
+      const ul = document.getElementById("students");
+      ul.innerHTML = "";
+      for (let i = 0; i < names.length; i++) {
+        const li = document.createElement("li");
+        li.textContent = names[i];
+        ul.appendChild(li);
+      }
+    }
+  </script>
+</body>
+</html>
