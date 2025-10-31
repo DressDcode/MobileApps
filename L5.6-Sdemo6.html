@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo: Δυναμικός Χαιρετισμός</title>
+</head>
+<body>
+  <h1>Δώσε το όνομά σου:</h1>
+  <input type="text" id="nameInput" placeholder="Γράψε το όνομά σου">
+  <h2 id="greeting">Γεια σου!</h2>
+
+  <script>
+    // Επιλέγουμε τα στοιχεία από το HTML
+    const input = document.getElementById("nameInput");
+    const greeting = document.getElementById("greeting");
+
+    // Όταν αλλάζει το περιεχόμενο του input...
+    input.addEventListener("input", function() {
+      const name = input.value.trim(); // παίρνουμε την τιμή του input
+
+      if (name === "") {
+        greeting.innerText = "Γεια σου!";
+      } else {
+        greeting.innerText = `Γεια σου, ${name}!`;
+      }
+    });
+  </script>
+</body>
+</html>
