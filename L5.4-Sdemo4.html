@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo: Πρόσθεσε Στοιχείο</title>
+</head>
+<body>
+  <h3>Λίστα στοιχείων</h3>
+  
+  <button id="add">Πρόσθεσε</button>
+  <ul id="list"></ul>
+
+  <script>
+    const btn = document.getElementById("add");
+    const list = document.getElementById("list");
+
+    btn.addEventListener("click", () => {
+      const li = document.createElement("li");
+      li.textContent = "Καινούργιο στοιχείο";
+      list.appendChild(li);
+    });
+  </script>
+</body>
+</html>
