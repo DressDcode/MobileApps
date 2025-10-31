@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="utf-8">
+  <title>Διαδραστικό Demo JavaScript</title>
+</head>
+<body>
+
+  <h2>Τελεστές και Εκφράσεις στην Πράξη</h2>
+  <p>Γράψε δύο αριθμούς και πάτα "Υπολογισμός":</p>
+
+  <label>Αριθμός 1: <input type="number" id="num1"></label><br><br>
+  <label>Αριθμός 2: <input type="number" id="num2"></label><br><br>
+
+  <button onclick="ypologismos()">Υπολογισμός</button>
+
+  <h3>Αποτελέσματα:</h3>
+  <div id="results"></div>
+
+  <script>
+    function ypologismos() {
+      // Παίρνουμε τις τιμές από τα input
+      let a = Number(document.getElementById("num1").value);
+      let b = Number(document.getElementById("num2").value);
+
+      // Υπολογισμοί
+      let sum = a + b;
+      let diff = a - b;
+      let prod = a * b;
+      let div = b !== 0 ? (a / b).toFixed(2) : "∞";
+      let mod = b !== 0 ? a % b : "—";
+
+      // Δημιουργούμε HTML με τα αποτελέσματα
+      let out = `
+        <p><b>Άθροισμα:</b> ${a} + ${b} = ${sum}</p>
+        <p><b>Διαφορά:</b> ${a} - ${b} = ${diff}</p>
+        <p><b>Πολλαπλασιασμός:</b> ${a} × ${b} = ${prod}</p>
+        <p><b>Διαίρεση:</b> ${a} ÷ ${b} = ${div}</p>
+        <p><b>Υπόλοιπο:</b> ${a} % ${b} = ${mod}</p>
+      `;
+
+      // Εμφανίζουμε τα αποτελέσματα στη σελίδα
+      document.getElementById("results").innerHTML = out;
+    }
+  </script>
+
+</body>
+</html>
