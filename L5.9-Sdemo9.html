@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Δείξε το όνομα</title>
+</head>
+<body>
+  <h1>Demo: Εμφάνιση ονόματος</h1>
+
+  <input type="text" id="username" placeholder="Όνομα">
+  <button id="btn">Δείξε το όνομα</button>
+
+  <script>
+    const input = document.getElementById("username");
+    const btn = document.getElementById("btn");
+
+    btn.addEventListener("click", () => {
+      console.log(input.value); // εμφανίζει στο console
+      alert(`Γεια σου, ${input.value}!`); // δείχνει μήνυμα
+    });
+  </script>
+</body>
+</html>
