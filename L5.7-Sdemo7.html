@@ -2,27 +2,23 @@
 <html lang="el">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demo: Δυναμικός Χαιρετισμός</title>
+  <title>Έλεγχος Ονόματος</title>
 </head>
 <body>
-  <h1>Δώσε το όνομά σου:</h1>
-  <input type="text" id="nameInput" placeholder="Γράψε το όνομά σου">
-  <h2 id="greeting">Γεια σου!</h2>
+  <h1>Demo Ελέγχου Ονόματος</h1>
+
+  <input type="text" id="name" placeholder="Όνομα">
+  <button id="submitBtn">Αποστολή</button>
 
   <script>
-    // Επιλέγουμε τα στοιχεία από το HTML
-    const input = document.getElementById("nameInput");
-    const greeting = document.getElementById("greeting");
+    const nameInput = document.getElementById("name");
+    const submitBtn = document.getElementById("submitBtn");
 
-    // Όταν αλλάζει το περιεχόμενο του input...
-    input.addEventListener("input", function() {
-      const name = input.value.trim(); // παίρνουμε την τιμή του input
-
-      if (name === "") {
-        greeting.innerText = "Γεια σου!";
+    submitBtn.addEventListener("click", () => {
+      if (nameInput.value.trim() === "") {
+        alert("Παρακαλώ γράψε το όνομά σου!");
       } else {
-        greeting.innerText = `Γεια σου, ${name}!`;
+        alert(`Καλωσήρθες, ${nameInput.value}!`);
       }
     });
   </script>
