@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Απόκρυψη / Εμφάνιση με classList</title>
+  <style>
+    /* Το μενού */
+    nav {
+      background-color: lightgray;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    /* Η κλάση που το κρύβει */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleBtn">Εμφάνιση / Απόκρυψη Μενού</button>
+
+  <nav id="navbar" class="hidden">
+    <a href="#">Αρχική</a> |
+    <a href="#">Υπηρεσίες</a> |
+    <a href="#">Επικοινωνία</a>
+  </nav>
+
+  <script>
+    const btn = document.getElementById("toggleBtn");
+    const nav = document.getElementById("navbar");
+
+    btn.addEventListener("click", () => {
+      nav.classList.toggle("hidden");
+    });
+  </script>
+</body>
+</html>
