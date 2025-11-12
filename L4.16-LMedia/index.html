@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Διαφορά width vs max-width</title>
+<style>
+body {
+  font-family: sans-serif;
+  margin: 2rem;
+}
+.wrapper {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.container {
+  width: 300px;
+  border: 2px solid #0074D9;
+  padding: 0.5rem;
+  text-align: center;
+  background: #f9f9f9;
+}
+img {
+  border: 1px solid #ccc;
+}
+
+/* Οι δύο περιπτώσεις */
+.width img {
+  width: 100%;         /* πάντα γεμίζει το κουτί */
+}
+.maxwidth img {
+  max-width: 100%;     /* δεν ξεπερνά το κουτί */
+}
+</style>
+</head>
+<body>
+
+<h2>Διαφορά <code>width:100%</code> vs <code>max-width:100%</code></h2>
+
+<div class="wrapper">
+
+  <div class="container width">
+    <h3>Αρχικές διαστάσεις 700 x 350px  και width: 100%</h3>
+    <img src="images/p1.jpg" alt="150px εικόνα">
+    <p>→ Τεντώνεται στα 300px εφόσον το πλάτος του container είναι μεγαλύτερο από 300px</p>
+  </div>
+
+  <div class="container maxwidth">
+    <h3>Αρχικές διαστάσεις 192 x 108px  max-width: 100%</h3>
+    <img src="images/p2.jpg" alt="150px εικόνα">
+    <p>→ Παραμένει 192px ακόμα και όταν το πλάτος του container είναι πάνω π.χ. από 200px</p>
+  </div>
+
+</div>
+
+</body>
+</html>
