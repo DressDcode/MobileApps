@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Box‑Shadow Playground με λευκό φόντο</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Inter, Arial;
+      background: #ffffff; /* λευκό φόντο */
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+      align-items: center;
+    }
+    input[type="range"], input[type="number"], input[type="color"] {
+      margin-top: 5px;
+    }
+    #demoBtn {
+      padding: 14px 30px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(180deg, #3b82f6, #2563eb);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px 0 rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+    }
+    #demoBtn:active {
+      /* inset σκιά όταν πατιέται */
+      box-shadow: inset 0 3px 6px rgba(0,0,0,0.3), inset 0 -3px 6px rgba(255,255,255,0.5);
+      transform: scale(0.98);
+    }
+    textarea {
+      width: 90%;
+      height: 100px;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Box‑Shadow Playground (Λευκό Φόντο)</h1>
+  <div class="controls">
+    <label>offset‑x (px)
+      <input id="ox" type="range" min="-100" max="100" value="0">
+    </label>
+    <label>offset‑y (px)
+      <input id="oy" type="range" min="-100" max="100" value="8">
+    </label>
+    <label>blur‑radius (px)
+      <input id="blur" type="range" min="0" max="100" value="20">
+    </label>
+    <label>spread‑radius (px)
+      <input id="spread" type="range" min="-50" max="50" value="0">
+    </label>
+    <label>Χρώμα
+      <input id="color" type="color" value="#000000">
+    </label>
+    <label>Opacity
+      <input id="opacity" type="range" min="0" max="1" step="0.01" value="0.3">
+    </label>
+    <label><input id="inset" type="checkbox"> inset</label>
+  </div>
+
+  <button id="demoBtn">Πάτα με</button>
+
+  <textarea id="code" readonly></textarea>
+
+  <script>
+    const qs = id => document.getElementById(id);
+    const els = {
+      ox: qs('ox'), oy: qs('oy'), blur: qs('blur'), spread: qs('spread'),
+      color: qs('color'), opacity: qs('opacity'), inset: qs('inset'),
+      btn: qs('demoBtn'), code: qs('code')
+    };
+
+    function hexToRgb(hex){
+      let h = hex.replace('#','');
+      if(h.length===3){ h = h.split('').map(c=>c+c).join(''); }
+      const n = parseInt(h, 16);
+      return { r: (n>>16)&255, g: (n>>8)&255, b: n&255 };
+    }
+
+    function update(){
+      const ox = +els.ox.value, oy = +els.oy.value, blur = +els.blur.value, spread = +els.spread.value;
+      const {r,g,b} = hexToRgb(els.color.value);
+      const a = +els.opacity.value;
+      const inset = els.inset.checked ? 'inset ' : '';
+      const shadow = `${inset}${ox}px ${oy}px ${blur}px ${spread}px rgba(${r},${g},${b},${a})`;
+      els.btn.style.boxShadow = shadow;
+      els.code.value = `box-shadow: ${shadow};`;
+    }
+
+    ['ox','oy','blur','spread','color','opacity','inset'].forEach(id=>{
+      els[id].addEventListener('input', update);
+    });
+
+    update();
+  </script>
+</body>
+</html>
