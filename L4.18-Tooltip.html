@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo: position relative</title>
+  <style>
+    .box {
+      width: 200px;
+      padding: 20px;
+      margin: 30px;
+      background: #e3f2fd;
+      border: 2px solid #2196f3;
+      position: relative; /* ΟΡΙΖΟΥΜΕ ΣΗΜΕΙΟ ΑΝΑΦΟΡΑΣ */
+    }
+
+    .tooltip {
+      position: absolute; /* “Κολλάει” πάνω στο .box */
+      top: -10px;
+      right: -10px;
+      background: #f44336;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .moved {
+      position: relative;
+      top: 10px;   /* Μικρο-μετακίνηση από την αρχική θέση */
+      left: 20px;  /* Δεν επηρεάζει τη ροή της σελίδας */
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>1. Relative element with absolute child</h2>
+  <div class="box">
+    Είμαι ένα κουτί με <strong>position: relative</strong>.
+    <span class="tooltip">Tooltip</span>
+  </div>
+
+  <h2>2. Same element moved with top/left</h2>
+  <div class="box moved">
+    Έχω position: relative και έχω μετακινηθεί οπτικά,
+    αλλά η ροή της σελίδας δεν άλλαξε.
+  </div>
+
+  <p>Αυτό το κείμενο παραμένει στη ροή, σαν το κουτί να μην είχε μετακινηθεί.</p>
+
+</body>
+</html>
