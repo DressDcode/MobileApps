@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<title>960 Grid Demo</title>
+<style>
+  /* Βασικά */
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    background: #f3f4f6;
+  }
+
+  /* Κύριο container 960px */
+  .container_12 {
+    width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header πλήρους πλάτους */
+  #header {
+    background: #1d4ed8;
+    color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  #header h1 {
+    margin: 0;
+    font-size: 28px;
+  }
+  #header p {
+    margin: 4px 0 0;
+  }
+
+  /* Κοινός κανόνας για “γραμμές” (clearfix για τα floats) */
+  .row {
+    overflow: hidden;     /* απλό clearfix */
+    margin-bottom: 20px;
+  }
+
+  /* Βασικές στήλες τύπου 960.gs */
+  .grid_4,
+  .grid_8 {
+    float: left;
+    min-height: 1px;
+  }
+
+  .grid_4 {
+    width: 300px;         /* 4 στήλες */
+    margin-right: 20px;   /* gutter δεξιά */
+  }
+
+  .grid_8 {
+    width: 620px;         /* 8 στήλες */
+    margin-right: 20px;   /* gutter δεξιά */
+  }
+
+  /* Το τελευταίο στοιχείο κάθε σειράς χωρίς extra gutter */
+  .row > .grid_4:last-child,
+  .row > .grid_8:last-child {
+    margin-right: 0;
+  }
+
+  /* Στυλ για τα κουτιά του demo */
+  .box {
+    background: #e0f2ff;
+    border-radius: 6px;
+    padding: 16px;
+  }
+  .box-alt {
+    background: #fef9c3;
+  }
+  .box-sidebar {
+    background: #dcfce7;
+  }
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+  }
+  p {
+    margin: 0;
+  }
+
+  footer {
+    background: #020617;
+    color: #e5e7eb;
+    padding: 10px 0;
+    margin-top: 30px;
+    font-size: 14px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="container_12">
+
+  <!-- Header -->
+  <header id="header" class="grid_12">
+    <h1>960 Grid Demo</h1>
+    <p>Σταθερό πλάτος 960px, 12 στήλες, floats.</p>
+  </header>
+
+  <!-- Πρώτη σειρά: 3 × .grid_4 (4+4+4 = 12) στην ίδια γραμμή -->
+  <section class="row">
+    <div class="grid_4">
+      <div class="box">
+        <h2>Κουτί 1</h2>
+        <p>Αυτό είναι ένα <code>.grid_4</code>.</p>
+      </div>
+    </div>
+
+    <div class="grid_4">
+      <div class="box">
+        <h2>Κουτί 2</h2>
+        <p>Άλλο ένα <code>.grid_4</code>, δίπλα με <code>float:left;</code>.</p>
+      </div>
+    </div>
+
+    <div class="grid_4">
+      <div class="box">
+        <h2>Κουτί 3</h2>
+        <p>Τρίτο <code>.grid_4</code>. Σύνολο 3×4 = 12 στήλες → ίδια γραμμή.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Δεύτερη σειρά: Κύριο περιεχόμενο (.grid_8) + sidebar (.grid_4) -->
+  <section class="row">
+    <div class="grid_8">
+      <div class="box box-alt">
+        <h2>Κύριο περιεχόμενο (.grid_8)</h2>
+        <p>Αυτή η περιοχή πιάνει 8 από τις 12 στήλες. Το πλάτος της είναι 620px,
+          σύμφωνα με τις τιμές του 960.gs συν τα gutters δεξιά/αριστερά.</p>
+      </div>
+    </div>
+
+    <div class="grid_4">
+      <div class="box box-sidebar">
+        <h2>Sidebar (.grid_4)</h2>
+        <p>Εδώ οι υπόλοιπες 4 στήλες (8 + 4 = 12).</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Demo βασισμένο στη λογική του 960 Grid System (σταθερό πλάτος + floats).
+  </footer>
+
+</div>
+</body>
+</html>
