@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <title>Demo align-items (stretch vs flex-start/center/flex-end)</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin-bottom: .5rem;
+    }
+
+    .controls {
+      margin-bottom: 1rem;
+    }
+
+    .controls button {
+      margin: 0 .25rem .25rem 0;
+      padding: .35rem .7rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+      font-size: .9rem;
+    }
+
+    .controls button.active {
+      background: #0056b3;
+      color: #fff;
+      border-color: #00408a;
+    }
+
+    .container-label {
+      margin-bottom: .3rem;
+      font-size: .9rem;
+      color: #555;
+    }
+
+    .flex-demo {
+      display: flex;
+      justify-content: center;
+      border: 2px dashed #999;
+      border-radius: 6px;
+      padding: 10px;
+      background: #fff;
+      min-height: 160px;
+      transition: all .25s ease;
+    }
+
+    .item {
+      width: 90px;
+      border-radius: 4px;
+      background: #ffcc80;
+      border: 1px solid #ffb74d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      margin: 0 8px;
+      text-align: center;
+      padding: 6px;
+    }
+
+    /* fixed heights σε 2 items */
+    .fixed40 { height: 40px; }
+    .fixed60 { height: 60px; }
+
+    .note {
+      margin-top: .8rem;
+      font-size: .85rem;
+      color: #555;
+    }
+
+    code {
+      background: #eee;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-size: .85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>align-items demo</h1>
+
+  <div class="controls">
+    <strong>Επίλεξε τιμή:</strong>
+    <button data-mode="stretch" class="active">stretch (default)</button>
+    <button data-mode="flex-start">flex-start</button>
+    <button data-mode="center">center</button>
+    <button data-mode="flex-end">flex-end</button>
+  </div>
+
+  <div class="container-label">
+    align-items: <code id="mode-label">stretch</code>
+  </div>
+
+  <div id="demo" class="flex-demo" style="align-items:stretch;">
+    <div class="item fixed40">
+      Item&nbsp;1<br>(height: 40px)
+    </div>
+
+    <div class="item">
+      Item&nbsp;2<br><strong>auto height</strong>
+    </div>
+
+    <div class="item fixed60">
+      Item&nbsp;3<br>(height: 60px)
+    </div>
+  </div>
+
+  <p class="note">
+    Στη τιμή <code>stretch</code> μόνο το <strong>Item 2 (auto height)</strong>
+    τεντώνεται για να φτάσει το ύψος του container.
+    Τα <strong>Item 1</strong> και <strong>Item 3</strong> κρατούν τα fixed height
+    (40px και 60px αντίστοιχα), ανεξάρτητα από το <code>align-items</code>.
+  </p>
+
+  <script>
+    const demo = document.getElementById("demo");
+    const label = document.getElementById("mode-label");
+    const buttons = document.querySelectorAll(".controls button");
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mode = btn.getAttribute("data-mode");
+
+        demo.style.alignItems = mode;
+        label.textContent = mode;
+
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
