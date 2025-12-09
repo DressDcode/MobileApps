@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flexbox vs Grid – Spotlight</title>
+  <style>
+    :root { --bg:#0b0d12; --panel:#121725; --text:#e8ecf1; --muted:#a8b1bd; --accent:#6fa8ff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+    header { padding: 28px 20px 8px; text-align: center; }
+    header h1 { margin: 0 0 6px; font-size: clamp(22px, 3vw, 32px); }
+    header p { margin: 0; color: var(--muted); }
+
+    .demo-wrapper { display: grid; gap: 18px; padding: 20px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+
+    .panel { background: var(--panel); border: 1px solid #1e2537; border-radius: 14px; padding: 16px; box-shadow: 0 6px 30px rgba(0,0,0,.25); }
+    .panel h2 { margin: 0 0 4px; font-size: 18px; }
+    .panel .hint { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+
+    .cards { margin-top: 8px; }
+    .card { background: #0f1422; border: 1px solid #1d2741; border-radius: 12px; padding: 14px; min-height: 84px; display: flex; gap: 10px; align-items: center; }
+    .card .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px rgba(111,168,255,.2); flex: 0 0 auto; }
+    .card h3 { margin: 0 0 6px; font-size: 16px; }
+    .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+    /* FLEXBOX version */
+    .cards.flex { display: flex; flex-wrap: wrap; gap: 12px; }
+    .cards.flex .card { flex: 1 1 220px; }
+
+    /* GRID version */
+    .cards.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    footer { text-align: center; padding: 18px; color: var(--muted); font-size: 13px; }
+    code { background: #0d1220; padding: 2px 6px; border-radius: 6px; border: 1px solid #1d2741; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Flexbox vs CSS Grid – Spotlight</h1>
+    <p>Δες καθαρά τη διαφορά στην τελευταία σειρά: Flexbox μοιράζει χώρο <em>ανά γραμμή</em>, Grid κρατά σταθερές στήλες σε όλο το πλέγμα.</p>
+  </header>
+
+  <section class="demo-wrapper">
+    <article class="panel">
+      <h2>Flexbox</h2>
+      <p class="hint">Με <code>flex-wrap</code> + <code>flex: 1 1 220px</code>. Η τελευταία σειρά πλαταίνει τα items γιατί κατανέμει χώρο στη δική της γραμμή.</p>
+      <div class="cards flex">
+        <div class="card"><div class="dot"></div><div><h3>1</h3><p>Σύντομο.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>2</h3><p>Πιο μεγάλο κείμενο για ύψος.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>3</h3><p>Σύντομο.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>4</h3><p>Σύντομο.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>5</h3><p>Σύντομο.</p></div></div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <h2>CSS Grid</h2>
+      <p class="hint">Με <code>repeat(auto-fit, minmax(220px, 1fr))</code>. Οι στήλες παραμένουν ίδιες· η τελευταία σειρά έχει κενά αλλά ίσες στήλες.</p>
+      <div class="cards grid">
+        <div class="card"><div class="dot"></div><div><h3>A</h3><p>Σύντομο.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>B</h3><p>Πιο μεγάλο κείμενο για ύψος.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>C</h3><p>Σύντομο.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>D</h3><p>Σύντομο.</p></div></div>
+        <div class="card"><div class="dot"></div><div><h3>E</h3><p>Σύντομο.</p></div></div>
+      </div>
+    </article>
+  </section>
+
+  <footer>
+    Tip: Μίκρυνε/μεγάλωσε το παράθυρο και δες πώς η τελευταία σειρά συμπεριφέρεται διαφορετικά στο Flex vs Grid.
+  </footer>
+</body>
+</html>
