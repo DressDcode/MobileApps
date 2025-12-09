@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Grid · place-items & place-content demo</title>
+<style>
+  :root {
+    --bg: #0f172a; --panel:#0b1220; --ink:#e5e7eb; --muted:#9ca3af;
+  }
+  * { box-sizing: border-box }
+  html, body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Arial }
+  h1 { font-size: clamp(1.15rem, 3vw, 1.6rem); margin: 16px auto 6px; max-width: 900px; padding: 0 12px; }
+  p  { margin: 0 auto 10px; max-width: 900px; color: var(--muted); padding: 0 12px; }
+
+  /* === Το GRID CONTAINER === */
+  .grid {
+    display: grid;
+    gap: 12px;
+
+    /* Για να φαίνεται το justify/align-content, αφήνουμε extra χώρο: */
+    width: min(900px, 92vw);
+    height: 60vh;
+    margin: 12px auto 22px;
+    padding: 12px;
+    border: 2px dashed rgba(148,163,184,.35);
+    border-radius: 12px;
+    background: var(--panel);
+
+    /* Στήλες: ευέλικτες μεταξύ 140–180px ώστε να προσαρμόζονται */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 180px));
+    /* Σειρές: σταθερό ύψος για να φαίνεται ότι τα items "κάθονται" στην κορυφή */
+    grid-auto-rows: 110px;
+
+    /* --- ΖΗΤΟΥΜΕΝΑ --- */
+    /* items: πώς κάθονται ΜΕΣΑ στο κελί τους */
+    place-items: start stretch;  /* align-items: start;  justify-items: stretch; */
+
+    /* tracks: πώς πακετάρονται μέσα στο container όταν περισσεύει χώρος */
+    place-content: start center; /* align-content: start; justify-content: center; */
+  }
+
+  /* === Τα items του grid === */
+  .item {
+    /* Δεν βάζουμε fixed ύψος, για να ΜΗΝ γεμίζει όλο το 110px του κελιού.
+       Με align-items:start, το item θα "κάθεται" στην κορυφή του κελιού. */
+    background: linear-gradient(180deg, #111827, #0b1220);
+    border: 1px solid rgba(148,163,184,.25);
+    border-radius: 10px;
+    padding: 10px;
+    color: #fff;
+    display: grid;                /* απλώς για να κεντράρουμε το κείμενο μέσα στο ίδιο το item */
+    place-items: center;          /* (δεν επηρεάζει τη στοίχιση του item μέσα στο ΚΕΛΙ) */
+  }
+
+  .hint { font-size: .95rem; }
+</style>
+</head>
+<body>
+  <h1>place-items: <code>start stretch</code> &nbsp;·&nbsp; place-content: <code>start center</code></h1>
+  <p class="hint">
+    Τα <b>items</b> κάθονται στην <b>κορυφή</b> κάθε κελιού και <b>τεντώνονται οριζόντια</b> (start/stretch).<br/>
+    Τα <b>tracks</b> (στήλες/σειρές) πακετάρονται <b>επάνω</b> και <b>κεντράρονται οριζόντια</b> όταν περισσεύει χώρος (start/center).
+    Δοκίμασε να αλλάξεις το πλάτος παραθύρου για να δεις το κεντράρισμα των στηλών.
+  </p>
+
+  <div class="grid">
+    <div class="item">1</div>
+    <div class="item">2<br/><small>(λίγο πιο ψηλό)</small></div>
+    <div class="item">3</div>
+    <div class="item">4</div>
+    <div class="item">5<br/>περιεχόμενο<br/>3 γραμμές</div>
+    <div class="item">6</div>
+    <div class="item">7</div>
+    <div class="item">8</div>
+  </div>
+
+  <!-- Χρήσιμα: αλλάζεις εδώ για πειραματισμό
+  .grid { place-items: center center; }        // τα items κεντράρουν μέσα στα κελιά
+  .grid { place-content: center center; }      // οι ίδιες οι στήλες/γραμμές κεντράρουν & κάθετα
+  .grid { grid-auto-rows: 140px; }             // περισσότερο vertical κενό => πιο καθαρή διαφορά στο align-content
+  -->
+</body>
+</html>
